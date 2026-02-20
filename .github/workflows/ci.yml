@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: .python-version
+      - name: Install dependencies
+        run: uv sync --frozen --all-packages
+      - name: Check formatting
+        run: ruff format --check
+      - name: Run linter
+        run: ruff check
+      - name: Run type checks
+        run: ty check
