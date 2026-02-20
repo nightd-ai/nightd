@@ -22,7 +22,7 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-      - run: uvx run zensical build --clean
+      - run: uvx zensical build --clean
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
