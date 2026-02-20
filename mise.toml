@@ -1,5 +1,25 @@
 [tools]
+"github:supabase/cli" = "latest"
 uv = "latest"
+
+[tasks.format]
+description = "Format code with ruff"
+run = "ruff format ."
+
+[tasks."linter:fix"]
+description = "Fix linting issues with ruff"
+run = "ruff check --fix ."
+
+[tasks."type-check"]
+description = "Run type checking with ty"
+run = "ty check ."
+
+[tasks.test]
+description = "Run tests with pytest"
+run = "pytest"
 
 [settings]
 python.uv_venv_auto = true
+
+[env]
+_.file = '.env'
