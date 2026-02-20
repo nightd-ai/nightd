@@ -41,3 +41,4 @@ Run development tasks with `mise run`:
 - `mise run linter:fix` - Fix linting errors with ruff
 - `mise run type-check` - Do type checking with ty
 - `mise run test` - Run tests with pytest
+- `mise run docs` - Run documentation locally

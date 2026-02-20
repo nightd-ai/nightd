@@ -18,6 +18,10 @@ run = "ty check ."
 description = "Run tests with pytest"
 run = "pytest"
 
+[tasks.docs]
+description = "Run documentation locally"
+run = "zensical serve"
+
 [settings]
 python.uv_venv_auto = true
 
