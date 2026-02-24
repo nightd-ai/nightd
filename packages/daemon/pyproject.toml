@@ -1,0 +1,8 @@
+[project]
+name = "daemon"
+version = "0.1.0"
+description = "Daemon app of nightd"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.132.0",
+]

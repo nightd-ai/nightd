@@ -15,7 +15,7 @@ A daemon to schedule autonomous coding agents.
 
    ```bash
    mise install
-   uv sync
+   uv sync --all-packages
    ```
 
 2. Start Supabase locally:

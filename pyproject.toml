@@ -14,3 +14,6 @@ dev = [
     "ty>=0.0.17",
     "zensical>=0.0.23",
 ]
+
+[tool.uv.workspace]
+members = ["packages/*"]
