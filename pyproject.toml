@@ -5,15 +5,23 @@ description = "A scheduler for autonomous coding agents"
 readme = "README.md"
 license = "FSL-1.1-ALv2"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "daemon",
+]
 
 [dependency-groups]
 dev = [
+    "nightctl",
     "pytest>=9.0.2",
+    "respx>=0.22.0",
     "ruff>=0.15.2",
     "ty>=0.0.17",
     "zensical>=0.0.23",
 ]
+
+[tool.uv.sources]
+daemon = { workspace = true }
+nightctl = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]

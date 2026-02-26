@@ -2,6 +2,11 @@
 
 A daemon to schedule autonomous coding agents.
 
+## CLI Commands
+
+- `nightd start [--host HOST] [--port PORT]` - Start the daemon (default: 127.0.0.1:8000)
+- `nightctl status` - Check if the daemon is running
+
 ## Development
 
 ### Prerequisites
@@ -32,6 +37,12 @@ A daemon to schedule autonomous coding agents.
    ```
 
    The values can be obtained by running `supabase status`.
+
+4. Start the daemon:
+
+   ```bash
+   nightd start
+   ```
 
 ### Tasks
 
