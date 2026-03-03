@@ -1,29 +1,18 @@
-[tools]
-"github:supabase/cli" = "latest"
-uv = "latest"
-
-[tasks.format]
-description = "Format code with ruff"
-run = "ruff format ."
-
-[tasks."linter:fix"]
-description = "Fix linting issues with ruff"
-run = "ruff check --fix ."
-
-[tasks."type-check"]
-description = "Run type checking with ty"
-run = "ty check ."
 
 [tasks.test]
-description = "Run tests with pytest"
-run = "pytest"
-
-[tasks.docs]
-description = "Run documentation locally"
-run = "zensical serve"
+description = "Run all checks on this project"
+run = [
+  "ruff format --check",
+  "ruff check",
+  "ty check",
+  "pytest",
+]
 
 [settings]
 python.uv_venv_auto = true
 
 [env]
 _.file = '.env'
+
+[tools]
+uv = "latest"
