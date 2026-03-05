@@ -1,5 +1,5 @@
 [project]
-name = "daemon"
+name = "nightd"
 version = "0.1.0"
 description = "Daemon app of nightd"
 requires-python = ">=3.14"
@@ -10,4 +10,4 @@ dependencies = [
 ]
 
 [project.scripts]
-nightd = "daemon.cli:app"
+nightd = "nightd.cli:app"

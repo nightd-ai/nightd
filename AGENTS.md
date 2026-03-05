@@ -2,7 +2,7 @@
 
 ## Tools
 
-This project uses `uv` as a Python package manager.
+This project is managed by `uv` and is a workspace project with multiple packages.
 
 ## Pre-commit Checklist
 

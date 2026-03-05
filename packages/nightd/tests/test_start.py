@@ -2,14 +2,14 @@ from unittest.mock import patch
 
 from typer.testing import CliRunner
 
-from daemon.cli import app
+from nightd.cli import app
 
 runner = CliRunner()
 
 
 def test_start_default():
     """Test start command with default host and port."""
-    with patch("daemon.cli.uvicorn.run") as mock_run:
+    with patch("nightd.cli.uvicorn.run") as mock_run:
         result = runner.invoke(app, ["start"])
 
         assert result.exit_code == 0
@@ -21,7 +21,7 @@ def test_start_default():
 
 def test_start_custom_host():
     """Test start command with custom host."""
-    with patch("daemon.cli.uvicorn.run") as mock_run:
+    with patch("nightd.cli.uvicorn.run") as mock_run:
         result = runner.invoke(app, ["start", "--host", "0.0.0.0"])
 
         assert result.exit_code == 0
@@ -31,7 +31,7 @@ def test_start_custom_host():
 
 def test_start_custom_port():
     """Test start command with custom port."""
-    with patch("daemon.cli.uvicorn.run") as mock_run:
+    with patch("nightd.cli.uvicorn.run") as mock_run:
         result = runner.invoke(app, ["start", "--port", "8080"])
 
         assert result.exit_code == 0
@@ -41,7 +41,7 @@ def test_start_custom_port():
 
 def test_start_custom_host_and_port():
     """Test start command with custom host and port."""
-    with patch("daemon.cli.uvicorn.run") as mock_run:
+    with patch("nightd.cli.uvicorn.run") as mock_run:
         result = runner.invoke(app, ["start", "-h", "0.0.0.0", "-p", "9000"])
 
         assert result.exit_code == 0
