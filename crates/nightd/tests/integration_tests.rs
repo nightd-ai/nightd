@@ -350,3 +350,186 @@ async fn test_full_task_lifecycle() {
     let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json["pending_tasks"], 1);
 }
+
+#[tokio::test]
+async fn test_concurrent_task_creation() {
+    let pool = create_test_pool().await;
+    let app = create_app(pool.clone());
+
+    // Create multiple tasks concurrently
+    let mut handles = vec![];
+    for i in 0..10 {
+        let app = app.clone();
+        let handle = tokio::spawn(async move {
+            app.oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/tasks")
+                    .header("content-type", "application/json")
+                    .body(Body::from(format!(r#"{{"prompt": "task {}"}}"#, i)))
+                    .unwrap(),
+            )
+            .await
+            .unwrap()
+        });
+        handles.push(handle);
+    }
+
+    // Wait for all creations
+    let results = futures::future::join_all(handles).await;
+
+    // All should succeed
+    for result in results {
+        assert_eq!(result.expect("task panicked").status(), StatusCode::CREATED);
+    }
+
+    // Verify all 10 tasks exist
+    let tasks = db::get_all_tasks(&pool, 100).await.unwrap();
+    assert_eq!(tasks.len(), 10);
+}
+
+#[tokio::test]
+async fn test_worker_state_transitions() {
+    let pool = create_test_pool().await;
+
+    // Create a task
+    let task = db::create_task(&pool, "test task").await.unwrap();
+    let task_id = task.id;
+
+    // Verify initial state
+    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, nightd::models::TaskStatus::Pending);
+    assert!(task.started_at.is_none());
+    assert!(task.completed_at.is_none());
+
+    // Mark as running
+    db::mark_task_running(&pool, &task_id).await.unwrap();
+    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, nightd::models::TaskStatus::Running);
+    assert!(task.started_at.is_some());
+    assert!(task.completed_at.is_none());
+
+    // Mark as completed
+    db::complete_task(&pool, &task_id, "success output", 0)
+        .await
+        .unwrap();
+    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, nightd::models::TaskStatus::Completed);
+    assert_eq!(task.response, Some("success output".to_string()));
+    assert_eq!(task.exit_code, Some(0));
+    assert!(task.completed_at.is_some());
+}
+
+#[tokio::test]
+async fn test_task_response_storage() {
+    let pool = create_test_pool().await;
+    let app = create_app(pool.clone());
+
+    // Create a task
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/tasks")
+                .header("content-type", "application/json")
+                .body(Body::from(r#"{"prompt": "generate code"}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::CREATED);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    let task_id = json["task_id"].as_str().unwrap();
+
+    // Simulate worker completing the task with response
+    let uuid = uuid::Uuid::parse_str(task_id).unwrap();
+    db::mark_task_running(&pool, &uuid).await.unwrap();
+    db::complete_task(&pool, &uuid, "Generated Python code...", 0)
+        .await
+        .unwrap();
+
+    // Fetch task and verify response
+    let response = app
+        .oneshot(
+            Request::builder()
+                .uri(&format!("/tasks/{}", task_id))
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(json["status"], "completed");
+    assert_eq!(json["response"], "Generated Python code...");
+    assert_eq!(json["exit_code"], 0);
+    assert!(json["started_at"].is_string());
+    assert!(json["completed_at"].is_string());
+}
+
+#[tokio::test]
+async fn test_empty_task_list() {
+    let pool = create_test_pool().await;
+    let app = create_app(pool);
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .uri("/tasks")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    assert!(json["tasks"].as_array().unwrap().is_empty());
+    assert_eq!(json["total"], 0);
+}
+
+#[tokio::test]
+async fn test_invalid_status_filter() {
+    let pool = create_test_pool().await;
+
+    // Create some tasks
+    db::create_task(&pool, "task 1").await.unwrap();
+    db::create_task(&pool, "task 2").await.unwrap();
+
+    let app = create_app(pool);
+
+    // Request with invalid status filter should still return all tasks
+    let response = app
+        .oneshot(
+            Request::builder()
+                .uri("/tasks?status=invalid")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    // Should return all tasks since invalid status falls through to get_all_tasks
+    assert_eq!(json["total"], 2);
+}

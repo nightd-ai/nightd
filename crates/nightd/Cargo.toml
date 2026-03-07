@@ -23,6 +23,7 @@ dirs = "6.0.0"
 
 [dev-dependencies]
 tower = { version = "0.5.3", features = ["util"] }
+futures = { workspace = true }
 
 [[bin]]
 name = "nightd"

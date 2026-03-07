@@ -1409,6 +1409,7 @@ dependencies = [
  "chrono",
  "clap",
  "dirs",
+ "futures",
  "serde",
  "serde_json",
  "sqlx",
