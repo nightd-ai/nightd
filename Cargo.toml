@@ -20,6 +20,7 @@ agent-client-protocol = "0.9"
 time = { version = "0.3", features = ["serde", "formatting", "parsing"] }
 uuid = { version = "1.11", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
 
 [profile.release]
 opt-level = 3
