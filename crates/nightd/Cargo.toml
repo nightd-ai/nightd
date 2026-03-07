@@ -15,7 +15,6 @@ sqlx = { workspace = true }
 agent-client-protocol = { workspace = true }
 time = { workspace = true }
 uuid = { workspace = true }
-chrono = { workspace = true }
 thiserror = "1.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
