@@ -175,8 +175,8 @@ pub async fn get_all_tasks(pool: &SqlitePool, limit: i64) -> Result<Vec<Task>, s
     Ok(tasks)
 }
 
-#[allow(dead_code)]
-pub(crate) async fn create_test_pool() -> SqlitePool {
+// Create a test pool for integration tests
+pub async fn create_test_pool() -> SqlitePool {
     let pool = sqlx::sqlite::SqlitePool::connect("sqlite::memory:")
         .await
         .expect("Failed to create test database pool");

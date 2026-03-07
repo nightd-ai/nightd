@@ -2,21 +2,8 @@ use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use nightd::api::create_app;
 use nightd::db;
-use sqlx::SqlitePool;
+use nightd::db::create_test_pool;
 use tower::util::ServiceExt;
-
-async fn create_test_pool() -> SqlitePool {
-    let pool = sqlx::sqlite::SqlitePool::connect("sqlite::memory:")
-        .await
-        .expect("Failed to create test database pool");
-
-    sqlx::migrate!("../../migrations")
-        .run(&pool)
-        .await
-        .expect("Failed to run migrations on test database");
-
-    pool
-}
 
 #[tokio::test]
 async fn test_status_endpoint() {
@@ -308,4 +295,58 @@ async fn test_status_includes_task_counts() {
     assert_eq!(json["running_tasks"], 1);
     assert_eq!(json["pending_tasks"], 1);
     assert_eq!(json["failed_tasks"], 1);
+}
+
+#[tokio::test]
+async fn test_full_task_lifecycle() {
+    let pool = create_test_pool().await;
+    let app = create_app(pool.clone());
+
+    // 1. Create a task via API
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/tasks")
+                .header("content-type", "application/json")
+                .body(Body::from(r#"{"prompt": "test task"}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::CREATED);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    let task_id = json["task_id"].as_str().unwrap();
+
+    // 2. Verify task was created in pending state
+    let task = nightd::db::get_task(&pool, &uuid::Uuid::parse_str(task_id).unwrap())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(task.status, nightd::models::TaskStatus::Pending);
+
+    // 3. Verify status endpoint shows pending count
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/status")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(json["pending_tasks"], 1);
 }

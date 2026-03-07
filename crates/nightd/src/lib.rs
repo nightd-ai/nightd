@@ -3,4 +3,4 @@ pub mod api;
 pub mod cli;
 pub mod db;
 pub mod models;
-pub(crate) mod worker;
+pub mod worker;
