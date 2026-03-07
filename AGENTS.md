@@ -1,5 +1,9 @@
 # Guidelines for agents
 
+## Dependencies
+
+Manage dependencies using `cargo` - e.g. `cargo add` to add a dependency. This will ensure exact versions are pinned and latest versions are not automatically used.
+
 ## Testing
 
 Use a `test` submodule within the Rust source file for unit tests. Example:
@@ -20,8 +24,22 @@ mod test {
 
 Use a `tests` directory for integration tests. Keep in mind that integration tests only have access to the public API of the crate. For an API that means starting a server within the integration test and making API calls against it.
 
-This project follows the testing diamond pattern. The majority of tests should be integration tests. Use unit tests only for testing internal algorithms.
+This project follows the testing diamond pattern. The majority of tests should be integration tests. Use unit tests only for testing internal algorithms or database tests.
 
 ## Pre-commit Checklist
 
 Before committing changes on code, tests or dependencies run `mise run test`.
+
+## Coding Rules
+
+### UUID
+
+Prefer UUID v4 for IDs. Use them especially as primary keys in databases.
+
+### Dates and Times
+
+Use the `time` crate for dates and times. Prefer UTC over local time.
+
+### Visibility
+
+Prefer private visibility or `pub(crate)` over public visibility (`pub`). Only expose public APIs that are part of the crate's public interface or are necessary for integration tests.
