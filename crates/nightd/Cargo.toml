@@ -17,6 +17,7 @@ time = { workspace = true }
 uuid = { workspace = true }
 chrono = { workspace = true }
 thiserror = "1.0"
+tracing = "0.1"
 
 [dev-dependencies]
 tower = { version = "0.5.3", features = ["util"] }

@@ -17,6 +17,7 @@ pub(crate) enum AcpError {
 #[allow(dead_code)]
 pub(crate) type Result<T> = std::result::Result<T, AcpError>;
 
+#[derive(Clone)]
 #[allow(dead_code)]
 pub(crate) struct AcpClient;
 
