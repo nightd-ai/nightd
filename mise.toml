@@ -1,18 +1,7 @@
-
 [tasks.test]
 description = "Run all checks on this project"
-run = [
-  "ruff format --check",
-  "ruff check",
-  "ty check",
-  "pytest",
-]
-
-[settings]
-python.uv_venv_auto = true
-
-[env]
-_.file = '.env'
+run = ["cargo fmt --check", "cargo clippy -- -D warnings", "cargo test"]
 
 [tools]
 uv = "latest"
+rust = "stable"
