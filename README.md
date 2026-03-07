@@ -13,6 +13,7 @@ A daemon to schedule autonomous coding agents.
 
 - [mise](https://mise.jdx.dev/) for development environment setup
 - [Docker](https://www.docker.com/) to run Supabase locally
+- [Rust](https://www.rust-lang.org/) (installed via mise)
 
 ### Setup
 
@@ -20,13 +21,13 @@ A daemon to schedule autonomous coding agents.
 
    ```bash
    mise install
-   uv sync --all-packages
+   cargo build
    ```
 
 2. Start the daemon:
 
    ```bash
-   nightd start
+   cargo run --bin nightd -- start
    ```
 
 ### Tests
@@ -34,7 +35,7 @@ A daemon to schedule autonomous coding agents.
 You can run the tests via:
 
 ```bash
-pytest
+cargo test
 ```
 
 ### Documentation
@@ -42,5 +43,5 @@ pytest
 To run the documentation locally:
 
 ```bash
-zensical serve
+uvx zensical serve
 ```

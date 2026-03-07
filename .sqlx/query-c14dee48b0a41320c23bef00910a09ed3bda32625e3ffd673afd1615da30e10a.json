@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "update tasks\n           set status = 'failed', response = ?1, exit_code = -1, completed_at = ?2\n           where id = ?3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "c14dee48b0a41320c23bef00910a09ed3bda32625e3ffd673afd1615da30e10a"
+}

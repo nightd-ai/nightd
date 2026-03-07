@@ -1,0 +1,29 @@
+[package]
+name = "nightd"
+version.workspace = true
+description.workspace = true
+license.workspace = true
+edition.workspace = true
+
+[dependencies]
+axum = { workspace = true }
+tokio = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+agent-client-protocol = { workspace = true }
+time = { workspace = true }
+uuid = { workspace = true }
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dirs = "6.0.0"
+
+[dev-dependencies]
+tower = { version = "0.5.3", features = ["util"] }
+futures = { workspace = true }
+
+[[bin]]
+name = "nightd"
+path = "src/main.rs"

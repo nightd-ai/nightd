@@ -1,16 +1,12 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
-
-# Virtual environments
-.venv
+# Rust-generated files
+/target/
+**/*.rs.bk
 
 # Website
 site/
 
 # Local environment variables
 .env
+
+# SQLite database for development
+nightd.db

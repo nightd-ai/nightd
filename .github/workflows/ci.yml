@@ -12,14 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-      - name: Install dependencies
-        run: uv sync --frozen --all-packages
+      - uses: dtolnay/rust-toolchain@stable
       - name: Check formatting
-        run: uv run ruff format --check
+        run: cargo fmt --check
+      - name: Check database types
+        env:
+          DATABASE_URL: "sqlite://nightd.db"
+        run: |
+          touch nightd.db
+          cargo install sqlx-cli
+          cargo sqlx migrate run
+          cargo sqlx prepare --check --workspace
       - name: Run linter
-        run: uv run ruff check
-      - name: Run type checks
-        run: uv run ty check
+        run: cargo clippy -- -D warnings
+      - name: Run tests
+        run: cargo test
+      - name: Build release
+        run: cargo build --release
