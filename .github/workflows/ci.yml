@@ -25,7 +25,7 @@ jobs:
           cargo sqlx prepare --check --workspace
       - name: Run linter
         run: cargo clippy -- -D warnings
-      - name: Build
-        run: cargo build --release
       - name: Run tests
         run: cargo test
+      - name: Build release
+        run: cargo build --release
