@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Copy, PartialEq, Type)]
 #[sqlx(rename_all = "lowercase")]
 #[allow(dead_code)]
-pub(crate) enum TaskStatus {
+pub enum TaskStatus {
     Pending,
     Running,
     Completed,
@@ -26,7 +26,7 @@ impl fmt::Display for TaskStatus {
 
 #[allow(dead_code)]
 impl TaskStatus {
-    pub(crate) fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             TaskStatus::Pending => "pending",
             TaskStatus::Running => "running",
@@ -38,20 +38,20 @@ impl TaskStatus {
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub(crate) struct Task {
-    pub(crate) id: Uuid,
-    pub(crate) prompt: String,
-    pub(crate) status: TaskStatus,
-    pub(crate) response: Option<String>,
-    pub(crate) exit_code: Option<i32>,
-    pub(crate) created_at: OffsetDateTime,
-    pub(crate) started_at: Option<OffsetDateTime>,
-    pub(crate) completed_at: Option<OffsetDateTime>,
+pub struct Task {
+    pub id: Uuid,
+    pub prompt: String,
+    pub status: TaskStatus,
+    pub response: Option<String>,
+    pub exit_code: Option<i32>,
+    pub created_at: OffsetDateTime,
+    pub started_at: Option<OffsetDateTime>,
+    pub completed_at: Option<OffsetDateTime>,
 }
 
 impl Task {
     #[allow(dead_code)]
-    pub(crate) fn new(prompt: String) -> Self {
+    pub fn new(prompt: String) -> Self {
         let now = OffsetDateTime::now_utc();
         Self {
             id: Uuid::new_v4(),

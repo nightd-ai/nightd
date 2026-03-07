@@ -1,6 +1,8 @@
 use crate::api::create_app;
+use crate::db;
 use clap::{Parser, Subcommand};
 use std::net::SocketAddr;
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "nightd")]
@@ -39,7 +41,21 @@ async fn start(host: String, port: u16) {
         .parse()
         .expect("Failed to parse address");
 
-    let app = create_app();
+    // Initialize database
+    let data_dir = dirs::data_dir()
+        .map(|dir| dir.join("nightd"))
+        .unwrap_or_else(|| PathBuf::from("."));
+    std::fs::create_dir_all(&data_dir).expect("Failed to create data directory");
+    let db_path = data_dir.join("nightd.db");
+
+    let pool = db::init_pool(&db_path)
+        .await
+        .expect("Failed to initialize database");
+    db::run_migrations(&pool)
+        .await
+        .expect("Failed to run migrations");
+
+    let app = create_app(pool);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     println!("Starting nightd daemon on {}", addr);

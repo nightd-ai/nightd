@@ -5,8 +5,7 @@ use time::OffsetDateTime;
 use time::format_description::well_known::Rfc3339;
 use uuid::Uuid;
 
-#[allow(dead_code)]
-pub(crate) async fn init_pool(database_path: &Path) -> Result<SqlitePool, sqlx::Error> {
+pub async fn init_pool(database_path: &Path) -> Result<SqlitePool, sqlx::Error> {
     let database_url = format!("sqlite://{}", database_path.display());
 
     let pool = SqlitePoolOptions::new()
@@ -17,8 +16,7 @@ pub(crate) async fn init_pool(database_path: &Path) -> Result<SqlitePool, sqlx::
     Ok(pool)
 }
 
-#[allow(dead_code)]
-pub(crate) async fn run_migrations(pool: &SqlitePool) -> Result<(), sqlx::Error> {
+pub async fn run_migrations(pool: &SqlitePool) -> Result<(), sqlx::Error> {
     sqlx::migrate!("../../migrations")
         .run(pool)
         .await
@@ -26,8 +24,7 @@ pub(crate) async fn run_migrations(pool: &SqlitePool) -> Result<(), sqlx::Error>
 }
 
 // Create a new task
-#[allow(dead_code)]
-pub(crate) async fn create_task(pool: &SqlitePool, prompt: &str) -> Result<Task, sqlx::Error> {
+pub async fn create_task(pool: &SqlitePool, prompt: &str) -> Result<Task, sqlx::Error> {
     let task = Task::new(prompt.to_string());
     let id_str = task.id.to_string();
     let created_at_str = task.created_at.format(&Rfc3339).unwrap();
@@ -57,8 +54,7 @@ pub(crate) async fn get_next_pending(pool: &SqlitePool) -> Result<Option<Task>, 
 }
 
 // Get a specific task by ID
-#[allow(dead_code)]
-pub(crate) async fn get_task(pool: &SqlitePool, id: &Uuid) -> Result<Option<Task>, sqlx::Error> {
+pub async fn get_task(pool: &SqlitePool, id: &Uuid) -> Result<Option<Task>, sqlx::Error> {
     let id_str = id.to_string();
 
     let task = sqlx::query_as::<_, Task>("SELECT * FROM tasks WHERE id = ?1")
@@ -70,8 +66,7 @@ pub(crate) async fn get_task(pool: &SqlitePool, id: &Uuid) -> Result<Option<Task
 }
 
 // Mark task as running
-#[allow(dead_code)]
-pub(crate) async fn mark_task_running(pool: &SqlitePool, id: &Uuid) -> Result<(), sqlx::Error> {
+pub async fn mark_task_running(pool: &SqlitePool, id: &Uuid) -> Result<(), sqlx::Error> {
     let id_str = id.to_string();
     let now = OffsetDateTime::now_utc().format(&Rfc3339).unwrap();
 
@@ -85,8 +80,7 @@ pub(crate) async fn mark_task_running(pool: &SqlitePool, id: &Uuid) -> Result<()
 }
 
 // Mark task as completed
-#[allow(dead_code)]
-pub(crate) async fn complete_task(
+pub async fn complete_task(
     pool: &SqlitePool,
     id: &Uuid,
     response: &str,
@@ -109,12 +103,7 @@ pub(crate) async fn complete_task(
 }
 
 // Mark task as failed
-#[allow(dead_code)]
-pub(crate) async fn fail_task(
-    pool: &SqlitePool,
-    id: &Uuid,
-    error: &str,
-) -> Result<(), sqlx::Error> {
+pub async fn fail_task(pool: &SqlitePool, id: &Uuid, error: &str) -> Result<(), sqlx::Error> {
     let id_str = id.to_string();
     let now = OffsetDateTime::now_utc().format(&Rfc3339).unwrap();
 
@@ -143,8 +132,7 @@ pub(crate) async fn get_running_tasks(pool: &SqlitePool) -> Result<Vec<Task>, sq
 }
 
 // Get tasks by status with limit
-#[allow(dead_code)]
-pub(crate) async fn get_tasks_by_status(
+pub async fn get_tasks_by_status(
     pool: &SqlitePool,
     status: TaskStatus,
     limit: i64,
@@ -163,8 +151,7 @@ pub(crate) async fn get_tasks_by_status(
 }
 
 // Count tasks by status
-#[allow(dead_code)]
-pub(crate) async fn count_tasks_by_status(
+pub async fn count_tasks_by_status(
     pool: &SqlitePool,
     status: TaskStatus,
 ) -> Result<i64, sqlx::Error> {
@@ -179,8 +166,7 @@ pub(crate) async fn count_tasks_by_status(
 }
 
 // Get all tasks with limit
-#[allow(dead_code)]
-pub(crate) async fn get_all_tasks(pool: &SqlitePool, limit: i64) -> Result<Vec<Task>, sqlx::Error> {
+pub async fn get_all_tasks(pool: &SqlitePool, limit: i64) -> Result<Vec<Task>, sqlx::Error> {
     let tasks = sqlx::query_as::<_, Task>("SELECT * FROM tasks ORDER BY created_at DESC LIMIT ?1")
         .bind(limit)
         .fetch_all(pool)
@@ -189,7 +175,7 @@ pub(crate) async fn get_all_tasks(pool: &SqlitePool, limit: i64) -> Result<Vec<T
     Ok(tasks)
 }
 
-#[cfg(test)]
+#[allow(dead_code)]
 pub(crate) async fn create_test_pool() -> SqlitePool {
     let pool = sqlx::sqlite::SqlitePool::connect("sqlite::memory:")
         .await
