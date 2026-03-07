@@ -1370,10 +1370,13 @@ dependencies = [
 name = "nightctl"
 version = "0.1.0"
 dependencies = [
+ "axum",
  "clap",
+ "nightd",
  "reqwest",
  "serde",
  "serde_json",
+ "sqlx",
  "time",
  "tokio",
  "uuid",
