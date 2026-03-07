@@ -1,8 +1,6 @@
-use nightd::api::create_app;
 use nightd::db;
 use nightd::models::TaskStatus;
 use sqlx::SqlitePool;
-use tokio::time::{Duration, sleep};
 
 async fn create_test_pool() -> SqlitePool {
     let pool = sqlx::sqlite::SqlitePool::connect("sqlite::memory:")
@@ -15,22 +13,6 @@ async fn create_test_pool() -> SqlitePool {
         .expect("Failed to run migrations on test database");
 
     pool
-}
-
-async fn start_test_daemon(pool: SqlitePool) -> u16 {
-    let port = 0; // Let OS assign port
-    let app = create_app(pool);
-    let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-        .await
-        .expect("Failed to bind to port");
-    let port = listener.local_addr().unwrap().port();
-
-    tokio::spawn(async move {
-        axum::serve(listener, app).await.unwrap();
-    });
-
-    sleep(Duration::from_millis(100)).await;
-    port
 }
 
 #[tokio::test]
