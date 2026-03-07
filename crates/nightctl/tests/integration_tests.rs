@@ -1,51 +1,39 @@
 use nightd::db;
-use nightd::models::TaskStatus;
-use sqlx::SqlitePool;
-
-async fn create_test_pool() -> SqlitePool {
-    let pool = sqlx::sqlite::SqlitePool::connect("sqlite::memory:")
-        .await
-        .expect("Failed to create test database pool");
-
-    sqlx::migrate!("../../migrations")
-        .run(&pool)
-        .await
-        .expect("Failed to run migrations on test database");
-
-    pool
-}
+use nightd::models::{
+    TaskStatus, count_tasks_by_status, create_task, fail_task, get_all_tasks, mark_task_running,
+};
 
 #[tokio::test]
 async fn test_run_command_creates_task() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create a task via the API to verify it works
-    let task = db::create_task(&pool, "test prompt").await.unwrap();
+    let task = create_task(&pool, "test prompt").await.unwrap();
     assert_eq!(task.prompt, "test prompt");
     assert_eq!(task.status, TaskStatus::Pending);
 }
 
 #[tokio::test]
 async fn test_status_shows_counts() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create tasks in different states
-    let running = db::create_task(&pool, "running task").await.unwrap();
-    db::mark_task_running(&pool, &running.id).await.unwrap();
+    let running = create_task(&pool, "running task").await.unwrap();
+    mark_task_running(&pool, &running.id).await.unwrap();
 
-    let _pending = db::create_task(&pool, "pending task").await.unwrap();
+    let _pending = create_task(&pool, "pending task").await.unwrap();
 
-    let failed = db::create_task(&pool, "failed task").await.unwrap();
-    db::fail_task(&pool, &failed.id, "error").await.unwrap();
+    let failed = create_task(&pool, "failed task").await.unwrap();
+    fail_task(&pool, &failed.id, "error").await.unwrap();
 
     // Verify counts
-    let running_count = db::count_tasks_by_status(&pool, TaskStatus::Running)
+    let running_count = count_tasks_by_status(&pool, TaskStatus::Running)
         .await
         .unwrap();
-    let pending_count = db::count_tasks_by_status(&pool, TaskStatus::Pending)
+    let pending_count = count_tasks_by_status(&pool, TaskStatus::Pending)
         .await
         .unwrap();
-    let failed_count = db::count_tasks_by_status(&pool, TaskStatus::Failed)
+    let failed_count = count_tasks_by_status(&pool, TaskStatus::Failed)
         .await
         .unwrap();
 
@@ -56,13 +44,13 @@ async fn test_status_shows_counts() {
 
 #[tokio::test]
 async fn test_list_tasks_format() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create tasks
-    db::create_task(&pool, "task 1").await.unwrap();
-    db::create_task(&pool, "task 2").await.unwrap();
+    create_task(&pool, "task 1").await.unwrap();
+    create_task(&pool, "task 2").await.unwrap();
 
     // Verify we can fetch them
-    let tasks = db::get_all_tasks(&pool, 10).await.unwrap();
+    let tasks = get_all_tasks(&pool, 10).await.unwrap();
     assert_eq!(tasks.len(), 2);
 }

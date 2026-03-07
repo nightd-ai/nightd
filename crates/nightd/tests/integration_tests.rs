@@ -2,12 +2,14 @@ use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use nightd::api::create_app;
 use nightd::db;
-use nightd::db::create_test_pool;
+use nightd::models::{
+    TaskStatus, complete_task, create_task, fail_task, get_all_tasks, get_task, mark_task_running,
+};
 use tower::util::ServiceExt;
 
 #[tokio::test]
 async fn test_status_endpoint() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response: axum::response::Response = app
@@ -25,7 +27,7 @@ async fn test_status_endpoint() {
 
 #[tokio::test]
 async fn test_status_response_body() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -52,7 +54,7 @@ async fn test_status_response_body() {
 
 #[tokio::test]
 async fn test_create_task_endpoint() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -79,7 +81,7 @@ async fn test_create_task_endpoint() {
 
 #[tokio::test]
 async fn test_create_task_invalid_json() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -99,11 +101,11 @@ async fn test_create_task_invalid_json() {
 
 #[tokio::test]
 async fn test_list_tasks_endpoint() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create some tasks
-    db::create_task(&pool, "task 1").await.unwrap();
-    db::create_task(&pool, "task 2").await.unwrap();
+    create_task(&pool, "task 1").await.unwrap();
+    create_task(&pool, "task 2").await.unwrap();
 
     let app = create_app(pool);
 
@@ -130,12 +132,12 @@ async fn test_list_tasks_endpoint() {
 
 #[tokio::test]
 async fn test_list_tasks_with_status_filter() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create tasks with different statuses
-    let task = db::create_task(&pool, "pending task").await.unwrap();
-    db::complete_task(&pool, &task.id, "done", 0).await.unwrap();
-    db::create_task(&pool, "another pending").await.unwrap();
+    let task = create_task(&pool, "pending task").await.unwrap();
+    complete_task(&pool, &task.id, "done", 0).await.unwrap();
+    create_task(&pool, "another pending").await.unwrap();
 
     let app = create_app(pool);
 
@@ -161,13 +163,11 @@ async fn test_list_tasks_with_status_filter() {
 
 #[tokio::test]
 async fn test_list_tasks_with_limit() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create many tasks
     for i in 0..10 {
-        db::create_task(&pool, &format!("task {}", i))
-            .await
-            .unwrap();
+        create_task(&pool, &format!("task {}", i)).await.unwrap();
     }
 
     let app = create_app(pool);
@@ -193,9 +193,9 @@ async fn test_list_tasks_with_limit() {
 
 #[tokio::test]
 async fn test_get_task_endpoint() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
-    let task = db::create_task(&pool, "test task").await.unwrap();
+    let task = create_task(&pool, "test task").await.unwrap();
     let task_id = task.id.to_string();
 
     let app = create_app(pool);
@@ -223,7 +223,7 @@ async fn test_get_task_endpoint() {
 
 #[tokio::test]
 async fn test_get_task_not_found() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -241,7 +241,7 @@ async fn test_get_task_not_found() {
 
 #[tokio::test]
 async fn test_get_task_invalid_uuid() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -259,20 +259,16 @@ async fn test_get_task_invalid_uuid() {
 
 #[tokio::test]
 async fn test_status_includes_task_counts() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create tasks in different states
-    let running_task = db::create_task(&pool, "running").await.unwrap();
-    db::mark_task_running(&pool, &running_task.id)
-        .await
-        .unwrap();
+    let running_task = create_task(&pool, "running").await.unwrap();
+    mark_task_running(&pool, &running_task.id).await.unwrap();
 
-    let _pending_task = db::create_task(&pool, "pending").await.unwrap();
+    let _pending_task = create_task(&pool, "pending").await.unwrap();
 
-    let failed_task = db::create_task(&pool, "failed").await.unwrap();
-    db::fail_task(&pool, &failed_task.id, "error")
-        .await
-        .unwrap();
+    let failed_task = create_task(&pool, "failed").await.unwrap();
+    fail_task(&pool, &failed_task.id, "error").await.unwrap();
 
     let app = create_app(pool);
 
@@ -299,7 +295,7 @@ async fn test_status_includes_task_counts() {
 
 #[tokio::test]
 async fn test_full_task_lifecycle() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool.clone());
 
     // 1. Create a task via API
@@ -325,11 +321,11 @@ async fn test_full_task_lifecycle() {
     let task_id = json["task_id"].as_str().unwrap();
 
     // 2. Verify task was created in pending state
-    let task = nightd::db::get_task(&pool, &uuid::Uuid::parse_str(task_id).unwrap())
+    let task = get_task(&pool, &uuid::Uuid::parse_str(task_id).unwrap())
         .await
         .unwrap()
         .unwrap();
-    assert_eq!(task.status, nightd::models::TaskStatus::Pending);
+    assert_eq!(task.status, TaskStatus::Pending);
 
     // 3. Verify status endpoint shows pending count
     let response = app
@@ -353,7 +349,7 @@ async fn test_full_task_lifecycle() {
 
 #[tokio::test]
 async fn test_concurrent_task_creation() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool.clone());
 
     // Create multiple tasks concurrently
@@ -384,37 +380,37 @@ async fn test_concurrent_task_creation() {
     }
 
     // Verify all 10 tasks exist
-    let tasks = db::get_all_tasks(&pool, 100).await.unwrap();
+    let tasks = get_all_tasks(&pool, 100).await.unwrap();
     assert_eq!(tasks.len(), 10);
 }
 
 #[tokio::test]
 async fn test_worker_state_transitions() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create a task
-    let task = db::create_task(&pool, "test task").await.unwrap();
+    let task = create_task(&pool, "test task").await.unwrap();
     let task_id = task.id;
 
     // Verify initial state
-    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
-    assert_eq!(task.status, nightd::models::TaskStatus::Pending);
+    let task = get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, TaskStatus::Pending);
     assert!(task.started_at.is_none());
     assert!(task.completed_at.is_none());
 
     // Mark as running
-    db::mark_task_running(&pool, &task_id).await.unwrap();
-    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
-    assert_eq!(task.status, nightd::models::TaskStatus::Running);
+    mark_task_running(&pool, &task_id).await.unwrap();
+    let task = get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, TaskStatus::Running);
     assert!(task.started_at.is_some());
     assert!(task.completed_at.is_none());
 
     // Mark as completed
-    db::complete_task(&pool, &task_id, "success output", 0)
+    complete_task(&pool, &task_id, "success output", 0)
         .await
         .unwrap();
-    let task = db::get_task(&pool, &task_id).await.unwrap().unwrap();
-    assert_eq!(task.status, nightd::models::TaskStatus::Completed);
+    let task = get_task(&pool, &task_id).await.unwrap().unwrap();
+    assert_eq!(task.status, TaskStatus::Completed);
     assert_eq!(task.response, Some("success output".to_string()));
     assert_eq!(task.exit_code, Some(0));
     assert!(task.completed_at.is_some());
@@ -422,7 +418,7 @@ async fn test_worker_state_transitions() {
 
 #[tokio::test]
 async fn test_task_response_storage() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool.clone());
 
     // Create a task
@@ -449,8 +445,8 @@ async fn test_task_response_storage() {
 
     // Simulate worker completing the task with response
     let uuid = uuid::Uuid::parse_str(task_id).unwrap();
-    db::mark_task_running(&pool, &uuid).await.unwrap();
-    db::complete_task(&pool, &uuid, "Generated Python code...", 0)
+    mark_task_running(&pool, &uuid).await.unwrap();
+    complete_task(&pool, &uuid, "Generated Python code...", 0)
         .await
         .unwrap();
 
@@ -480,7 +476,7 @@ async fn test_task_response_storage() {
 
 #[tokio::test]
 async fn test_empty_task_list() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
     let app = create_app(pool);
 
     let response = app
@@ -505,11 +501,11 @@ async fn test_empty_task_list() {
 
 #[tokio::test]
 async fn test_invalid_status_filter() {
-    let pool = create_test_pool().await;
+    let pool = db::init("sqlite::memory:").await.unwrap();
 
     // Create some tasks
-    db::create_task(&pool, "task 1").await.unwrap();
-    db::create_task(&pool, "task 2").await.unwrap();
+    create_task(&pool, "task 1").await.unwrap();
+    create_task(&pool, "task 2").await.unwrap();
 
     let app = create_app(pool);
 

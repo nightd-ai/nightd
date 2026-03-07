@@ -10,8 +10,7 @@ use sqlx::SqlitePool;
 use time::format_description::well_known::Rfc3339;
 use uuid::Uuid;
 
-use crate::db;
-use crate::models::{Task, TaskStatus};
+use crate::models::{self, Task, TaskStatus};
 
 // Custom error response type
 struct AppError(StatusCode, String);
@@ -119,15 +118,15 @@ pub(crate) struct ListTasksQuery {
 
 // Handler functions
 async fn status(State(state): State<AppState>) -> Result<Json<StatusResponse>, StatusCode> {
-    let running_count = db::count_tasks_by_status(&state.db_pool, TaskStatus::Running)
+    let running_count = models::count_tasks_by_status(&state.db_pool, TaskStatus::Running)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let pending_count = db::count_tasks_by_status(&state.db_pool, TaskStatus::Pending)
+    let pending_count = models::count_tasks_by_status(&state.db_pool, TaskStatus::Pending)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let failed_count = db::count_tasks_by_status(&state.db_pool, TaskStatus::Failed)
+    let failed_count = models::count_tasks_by_status(&state.db_pool, TaskStatus::Failed)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -145,7 +144,7 @@ async fn create_task(
 ) -> Result<(StatusCode, Json<CreateTaskResponse>), AppError> {
     let request: CreateTaskRequest = custom_json_extractor(req).await?;
 
-    let task = db::create_task(&state.db_pool, &request.prompt)
+    let task = models::create_task(&state.db_pool, &request.prompt)
         .await
         .map_err(|_| {
             AppError(
@@ -171,16 +170,18 @@ async fn list_tasks(
 
     let tasks = match query.status.as_deref() {
         Some("pending") => {
-            db::get_tasks_by_status(&state.db_pool, TaskStatus::Pending, limit).await
+            models::get_tasks_by_status(&state.db_pool, TaskStatus::Pending, limit).await
         }
         Some("running") => {
-            db::get_tasks_by_status(&state.db_pool, TaskStatus::Running, limit).await
+            models::get_tasks_by_status(&state.db_pool, TaskStatus::Running, limit).await
         }
         Some("completed") => {
-            db::get_tasks_by_status(&state.db_pool, TaskStatus::Completed, limit).await
+            models::get_tasks_by_status(&state.db_pool, TaskStatus::Completed, limit).await
         }
-        Some("failed") => db::get_tasks_by_status(&state.db_pool, TaskStatus::Failed, limit).await,
-        _ => db::get_all_tasks(&state.db_pool, limit).await,
+        Some("failed") => {
+            models::get_tasks_by_status(&state.db_pool, TaskStatus::Failed, limit).await
+        }
+        _ => models::get_all_tasks(&state.db_pool, limit).await,
     }
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -199,7 +200,7 @@ async fn get_task(
 ) -> Result<Json<TaskDto>, StatusCode> {
     let uuid = Uuid::parse_str(&task_id).map_err(|_| StatusCode::BAD_REQUEST)?;
 
-    let task = db::get_task(&state.db_pool, &uuid)
+    let task = models::get_task(&state.db_pool, &uuid)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         .ok_or(StatusCode::NOT_FOUND)?;

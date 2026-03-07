@@ -74,21 +74,16 @@ async fn start(host: String, port: u16, concurrency: usize, database: PathBuf) {
     }
 
     // Initialize database
+    let database_url = format!("sqlite://{}", database_path.display());
     info!("Initializing database at {:?}", database_path);
-    let pool = match db::init_pool(&database_path).await {
+    let pool = match db::init(&database_url).await {
         Ok(pool) => pool,
         Err(e) => {
             error!("Failed to initialize database: {}", e);
             std::process::exit(1);
         }
     };
-
-    // Run migrations
-    if let Err(e) = db::run_migrations(&pool).await {
-        error!("Failed to run migrations: {}", e);
-        std::process::exit(1);
-    }
-    info!("Database migrations completed");
+    info!("Database initialized successfully");
 
     // Start background worker
     info!(

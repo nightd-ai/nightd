@@ -49,3 +49,17 @@ Use the `time` crate for dates and times. Prefer UTC over local time.
 ### Visibility
 
 Prefer private visibility or `pub(crate)` over public visibility (`pub`). Only expose public APIs that are part of the crate's public interface or are necessary for integration tests.
+
+### Imports
+
+Import structs and enums from a module directly, but not functions. Example:
+
+```rust
+use crate::models::{self, Task, TaskStatus};
+
+let task = Task {
+    status: TaskStatus::Pending,
+};
+
+models::create_task(db, "foo bar");
+```
