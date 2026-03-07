@@ -60,15 +60,11 @@ struct TaskDto {
     id: String,
     prompt: String,
     status: String,
-    #[allow(dead_code)]
-    response: Option<String>,
-    #[allow(dead_code)]
-    exit_code: Option<i32>,
+    pub _response: Option<String>,
+    pub _exit_code: Option<i32>,
     created_at: String,
-    #[allow(dead_code)]
-    started_at: Option<String>,
-    #[allow(dead_code)]
-    completed_at: Option<String>,
+    pub _started_at: Option<String>,
+    pub _completed_at: Option<String>,
 }
 
 #[derive(Deserialize)]

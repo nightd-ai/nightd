@@ -5,7 +5,6 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Copy, PartialEq, Type)]
 #[sqlx(rename_all = "lowercase")]
-#[allow(dead_code)]
 pub enum TaskStatus {
     Pending,
     Running,
@@ -24,7 +23,6 @@ impl fmt::Display for TaskStatus {
     }
 }
 
-#[allow(dead_code)]
 impl TaskStatus {
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -37,7 +35,6 @@ impl TaskStatus {
 }
 
 #[derive(Debug, Clone)]
-#[allow(dead_code)]
 pub struct Task {
     pub id: Uuid,
     pub prompt: String,
@@ -50,7 +47,6 @@ pub struct Task {
 }
 
 impl Task {
-    #[allow(dead_code)]
     pub fn new(prompt: String) -> Self {
         let now = OffsetDateTime::now_utc();
         Self {

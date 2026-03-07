@@ -2,7 +2,7 @@ use std::process::Stdio;
 use thiserror::Error;
 
 #[derive(Error, Debug, Clone)]
-#[allow(clippy::enum_variant_names, dead_code)]
+#[allow(clippy::enum_variant_names)]
 pub(crate) enum AcpError {
     #[error("Failed to spawn ACP client: {0}")]
     SpawnError(String),
@@ -14,14 +14,11 @@ pub(crate) enum AcpError {
     IoError(String),
 }
 
-#[allow(dead_code)]
 pub(crate) type Result<T> = std::result::Result<T, AcpError>;
 
 #[derive(Clone)]
-#[allow(dead_code)]
 pub(crate) struct AcpClient;
 
-#[allow(dead_code)]
 impl AcpClient {
     pub(crate) fn new() -> Result<Self> {
         Ok(Self)

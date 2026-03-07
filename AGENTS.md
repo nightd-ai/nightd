@@ -26,9 +26,15 @@ Use a `tests` directory for integration tests. Keep in mind that integration tes
 
 This project follows the testing diamond pattern. The majority of tests should be integration tests. Use unit tests only for testing internal algorithms or database tests.
 
-## Pre-commit Checklist
+## Comitting
+
+### Pre-commit Checklist
 
 Before committing changes on code, tests or dependencies run `mise run test`.
+
+### Signing Off
+
+Commits have to be signed off. ALWAYS use `git commit --signoff`, when committing changes.
 
 ## Coding Rules
 

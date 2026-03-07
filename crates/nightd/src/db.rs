@@ -42,7 +42,6 @@ pub async fn create_task(pool: &SqlitePool, prompt: &str) -> Result<Task, sqlx::
 }
 
 // Get next pending task (oldest first)
-#[allow(dead_code)]
 pub(crate) async fn get_next_pending(pool: &SqlitePool) -> Result<Option<Task>, sqlx::Error> {
     let task = sqlx::query_as::<_, Task>(
         "SELECT * FROM tasks WHERE status = 'pending' ORDER BY created_at ASC LIMIT 1",
@@ -120,8 +119,7 @@ pub async fn fail_task(pool: &SqlitePool, id: &Uuid, error: &str) -> Result<(), 
 }
 
 // Get running tasks
-#[allow(dead_code)]
-pub(crate) async fn get_running_tasks(pool: &SqlitePool) -> Result<Vec<Task>, sqlx::Error> {
+pub(crate) async fn _get_running_tasks(pool: &SqlitePool) -> Result<Vec<Task>, sqlx::Error> {
     let tasks = sqlx::query_as::<_, Task>(
         "SELECT * FROM tasks WHERE status = 'running' ORDER BY started_at ASC",
     )
@@ -343,7 +341,7 @@ mod tests {
         assert_eq!(completed_count, 1);
 
         // Test get by status
-        let running_tasks = get_running_tasks(&pool).await.unwrap();
+        let running_tasks = _get_running_tasks(&pool).await.unwrap();
         assert_eq!(running_tasks.len(), 1);
         assert_eq!(running_tasks[0].id, task1.id);
     }

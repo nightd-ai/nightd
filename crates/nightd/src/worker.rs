@@ -8,7 +8,6 @@ use tokio::time::{Duration, sleep};
 use tracing::{error, info, warn};
 
 #[derive(Error, Debug)]
-#[allow(dead_code)]
 pub(crate) enum WorkerError {
     #[error("Database error: {0}")]
     Database(#[from] sqlx::Error),
@@ -17,11 +16,9 @@ pub(crate) enum WorkerError {
     Acp(#[from] crate::acp::AcpError),
 }
 
-#[allow(dead_code)]
 pub(crate) type Result<T> = std::result::Result<T, WorkerError>;
 
 #[derive(Clone)]
-#[allow(dead_code)]
 pub(crate) struct Worker {
     db_pool: SqlitePool,
     concurrency: usize,
@@ -29,7 +26,6 @@ pub(crate) struct Worker {
 }
 
 impl Worker {
-    #[allow(dead_code)]
     pub(crate) async fn new(db_pool: SqlitePool, concurrency: usize) -> Result<Self> {
         let acp_client = AcpClient::new()?;
 
@@ -40,7 +36,6 @@ impl Worker {
         })
     }
 
-    #[allow(dead_code)]
     pub(crate) async fn run(&self) -> Result<()> {
         let semaphore = Arc::new(Semaphore::new(self.concurrency));
 
@@ -77,7 +72,6 @@ impl Worker {
     }
 }
 
-#[allow(dead_code)]
 async fn process_task(
     task: crate::models::Task,
     client: AcpClient,
