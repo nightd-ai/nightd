@@ -15,6 +15,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Check formatting
         run: cargo fmt --check
+      - name: Check database types
+        env:
+          DATABASE_URL: "sqlite://nightd.db"
+        run: |
+          touch nightd.db
+          cargo install sqlx-cli
+          cargo sqlx migrate run
+          cargo sqlx prepare --check --workspace
       - name: Run linter
         run: cargo clippy -- -D warnings
       - name: Build

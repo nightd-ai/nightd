@@ -63,3 +63,11 @@ let task = Task {
 
 models::create_task(db, "foo bar");
 ```
+
+### SQL
+
+ALWAYS use lowercase for SQL keywords!
+
+Use sqlx `query!` macro for type safe queries.
+
+Use raw strings for SQL queries and format SQL queries using multiple lines.

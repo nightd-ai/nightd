@@ -66,21 +66,37 @@ impl Task {
 pub async fn create_task(pool: &SqlitePool, prompt: &str) -> Result<Task, sqlx::Error> {
     let task = Task::new(prompt.to_string());
 
-    sqlx::query("INSERT INTO tasks (id, prompt, status, created_at) VALUES (?1, ?2, ?3, ?4)")
-        .bind(task.id)
-        .bind(&task.prompt)
-        .bind(task.status)
-        .bind(task.created_at)
-        .execute(pool)
-        .await?;
+    sqlx::query!(
+        r#"insert into tasks (id, prompt, status, created_at)
+           values (?1, ?2, ?3, ?4)"#,
+        task.id,
+        task.prompt,
+        task.status,
+        task.created_at
+    )
+    .execute(pool)
+    .await?;
 
     Ok(task)
 }
 
 // Get next pending task (oldest first)
 pub async fn get_next_pending(pool: &SqlitePool) -> Result<Option<Task>, sqlx::Error> {
-    let task = sqlx::query_as::<_, Task>(
-        "SELECT * FROM tasks WHERE status = 'pending' ORDER BY created_at ASC LIMIT 1",
+    let task = sqlx::query_as!(
+        Task,
+        r#"select
+            id as "id!: Uuid",
+            prompt,
+            status as "status!: TaskStatus",
+            response,
+            exit_code as "exit_code: _",
+            created_at as "created_at!: OffsetDateTime",
+            started_at as "started_at: _",
+            completed_at as "completed_at: _"
+        from tasks
+        where status = 'pending'
+        order by created_at asc
+        limit 1"#
     )
     .fetch_optional(pool)
     .await?;
@@ -90,10 +106,23 @@ pub async fn get_next_pending(pool: &SqlitePool) -> Result<Option<Task>, sqlx::E
 
 // Get a specific task by ID
 pub async fn get_task(pool: &SqlitePool, id: &Uuid) -> Result<Option<Task>, sqlx::Error> {
-    let task = sqlx::query_as::<_, Task>("SELECT * FROM tasks WHERE id = ?1")
-        .bind(id)
-        .fetch_optional(pool)
-        .await?;
+    let task = sqlx::query_as!(
+        Task,
+        r#"select
+            id as "id!: Uuid",
+            prompt,
+            status as "status!: TaskStatus",
+            response,
+            exit_code as "exit_code: _",
+            created_at as "created_at!: OffsetDateTime",
+            started_at as "started_at: _",
+            completed_at as "completed_at: _"
+        from tasks
+        where id = ?1"#,
+        id
+    )
+    .fetch_optional(pool)
+    .await?;
 
     Ok(task)
 }
@@ -102,11 +131,15 @@ pub async fn get_task(pool: &SqlitePool, id: &Uuid) -> Result<Option<Task>, sqlx
 pub async fn mark_task_running(pool: &SqlitePool, id: &Uuid) -> Result<(), sqlx::Error> {
     let now = OffsetDateTime::now_utc();
 
-    sqlx::query("UPDATE tasks SET status = 'running', started_at = ?1 WHERE id = ?2")
-        .bind(now)
-        .bind(id)
-        .execute(pool)
-        .await?;
+    sqlx::query!(
+        r#"update tasks
+           set status = 'running', started_at = ?1
+           where id = ?2"#,
+        now,
+        id
+    )
+    .execute(pool)
+    .await?;
 
     Ok(())
 }
@@ -120,13 +153,15 @@ pub async fn complete_task(
 ) -> Result<(), sqlx::Error> {
     let now = OffsetDateTime::now_utc();
 
-    sqlx::query(
-        "UPDATE tasks SET status = 'completed', response = ?1, exit_code = ?2, completed_at = ?3 WHERE id = ?4"
+    sqlx::query!(
+        r#"update tasks
+           set status = 'completed', response = ?1, exit_code = ?2, completed_at = ?3
+           where id = ?4"#,
+        response,
+        exit_code,
+        now,
+        id
     )
-    .bind(response)
-    .bind(exit_code)
-    .bind(now)
-    .bind(id)
     .execute(pool)
     .await?;
 
@@ -137,12 +172,14 @@ pub async fn complete_task(
 pub async fn fail_task(pool: &SqlitePool, id: &Uuid, error: &str) -> Result<(), sqlx::Error> {
     let now = OffsetDateTime::now_utc();
 
-    sqlx::query(
-        "UPDATE tasks SET status = 'failed', response = ?1, exit_code = -1, completed_at = ?2 WHERE id = ?3"
+    sqlx::query!(
+        r#"update tasks
+           set status = 'failed', response = ?1, exit_code = -1, completed_at = ?2
+           where id = ?3"#,
+        error,
+        now,
+        id
     )
-    .bind(error)
-    .bind(now)
-    .bind(id)
     .execute(pool)
     .await?;
 
@@ -151,8 +188,20 @@ pub async fn fail_task(pool: &SqlitePool, id: &Uuid, error: &str) -> Result<(), 
 
 // Get running tasks
 pub(crate) async fn _get_running_tasks(pool: &SqlitePool) -> Result<Vec<Task>, sqlx::Error> {
-    let tasks = sqlx::query_as::<_, Task>(
-        "SELECT * FROM tasks WHERE status = 'running' ORDER BY started_at ASC",
+    let tasks = sqlx::query_as!(
+        Task,
+        r#"select
+            id as "id!: Uuid",
+            prompt,
+            status as "status!: TaskStatus",
+            response,
+            exit_code as "exit_code: _",
+            created_at as "created_at!: OffsetDateTime",
+            started_at as "started_at: _",
+            completed_at as "completed_at: _"
+        from tasks
+        where status = 'running'
+        order by started_at asc"#
     )
     .fetch_all(pool)
     .await?;
@@ -166,11 +215,24 @@ pub async fn get_tasks_by_status(
     status: TaskStatus,
     limit: i64,
 ) -> Result<Vec<Task>, sqlx::Error> {
-    let tasks = sqlx::query_as::<_, Task>(
-        "SELECT * FROM tasks WHERE status = ?1 ORDER BY created_at DESC LIMIT ?2",
+    let tasks = sqlx::query_as!(
+        Task,
+        r#"select
+            id as "id!: Uuid",
+            prompt,
+            status as "status!: TaskStatus",
+            response,
+            exit_code as "exit_code: _",
+            created_at as "created_at!: OffsetDateTime",
+            started_at as "started_at: _",
+            completed_at as "completed_at: _"
+        from tasks
+        where status = ?1
+        order by created_at desc
+        limit ?2"#,
+        status,
+        limit
     )
-    .bind(status)
-    .bind(limit)
     .fetch_all(pool)
     .await?;
 
@@ -182,8 +244,7 @@ pub async fn count_tasks_by_status(
     pool: &SqlitePool,
     status: TaskStatus,
 ) -> Result<i64, sqlx::Error> {
-    let count = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM tasks WHERE status = ?1")
-        .bind(status)
+    let count = sqlx::query_scalar!(r#"select count(*) from tasks where status = ?1"#, status)
         .fetch_one(pool)
         .await?;
 
@@ -192,10 +253,24 @@ pub async fn count_tasks_by_status(
 
 // Get all tasks with limit
 pub async fn get_all_tasks(pool: &SqlitePool, limit: i64) -> Result<Vec<Task>, sqlx::Error> {
-    let tasks = sqlx::query_as::<_, Task>("SELECT * FROM tasks ORDER BY created_at DESC LIMIT ?1")
-        .bind(limit)
-        .fetch_all(pool)
-        .await?;
+    let tasks = sqlx::query_as!(
+        Task,
+        r#"select
+            id as "id!: Uuid",
+            prompt,
+            status as "status!: TaskStatus",
+            response,
+            exit_code as "exit_code: _",
+            created_at as "created_at!: OffsetDateTime",
+            started_at as "started_at: _",
+            completed_at as "completed_at: _"
+        from tasks
+        order by created_at desc
+        limit ?1"#,
+        limit
+    )
+    .fetch_all(pool)
+    .await?;
 
     Ok(tasks)
 }

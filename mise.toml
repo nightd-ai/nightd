@@ -1,7 +1,19 @@
 [tasks.test]
 description = "Run all checks on this project"
-run = ["cargo fmt --check", "cargo clippy -- -D warnings", "cargo test"]
+run = [
+  "touch nightd.db",
+  "cargo sqlx migrate run",
+  "cargo sqlx prepare --workspace",
+  "cargo fmt --check",
+  "cargo clippy -- -D warnings",
+  "cargo test",
+]
 
 [tools]
 uv = "latest"
 rust = "stable"
+"cargo:sqlx-cli" = "latest"
+
+[env]
+DATABASE_URL = "sqlite://nightd.db"
+_.file = '.env'

@@ -6,7 +6,7 @@ pub async fn init(database_url: &str) -> Result<SqlitePool, sqlx::Error> {
         .connect(database_url)
         .await?;
 
-    sqlx::migrate!("./migrations")
+    sqlx::migrate!("../../migrations")
         .run(&pool)
         .await
         .map_err(|e| sqlx::Error::Migrate(Box::new(e)))?;

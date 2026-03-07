@@ -1,0 +1,62 @@
+{
+  "db_name": "SQLite",
+  "query": "select\n            id as \"id!: Uuid\",\n            prompt,\n            status as \"status!: TaskStatus\",\n            response,\n            exit_code as \"exit_code: _\",\n            created_at as \"created_at!: OffsetDateTime\",\n            started_at as \"started_at: _\",\n            completed_at as \"completed_at: _\"\n        from tasks\n        where status = 'running'\n        order by started_at asc",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!: Uuid",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "prompt",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "status!: TaskStatus",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "response",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "exit_code: _",
+        "ordinal": 4,
+        "type_info": "Integer"
+      },
+      {
+        "name": "created_at!: OffsetDateTime",
+        "ordinal": 5,
+        "type_info": "Text"
+      },
+      {
+        "name": "started_at: _",
+        "ordinal": 6,
+        "type_info": "Text"
+      },
+      {
+        "name": "completed_at: _",
+        "ordinal": 7,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "10d0049260634107433a16b91147ec6ba14e8eb3c6f5fb2889221f5603f1b64c"
+}

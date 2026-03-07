@@ -7,3 +7,6 @@ site/
 
 # Local environment variables
 .env
+
+# SQLite database for development
+nightd.db
