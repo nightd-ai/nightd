@@ -1,4 +1,5 @@
 use sqlx::{FromRow, SqlitePool, Type};
+use std::convert::TryFrom;
 use std::fmt;
 use time::OffsetDateTime;
 use uuid::Uuid;
@@ -14,12 +15,7 @@ pub enum TaskStatus {
 
 impl fmt::Display for TaskStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            TaskStatus::Pending => write!(f, "pending"),
-            TaskStatus::Running => write!(f, "running"),
-            TaskStatus::Completed => write!(f, "completed"),
-            TaskStatus::Failed => write!(f, "failed"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }
 
@@ -30,6 +26,20 @@ impl TaskStatus {
             TaskStatus::Running => "running",
             TaskStatus::Completed => "completed",
             TaskStatus::Failed => "failed",
+        }
+    }
+}
+
+impl TryFrom<&str> for TaskStatus {
+    type Error = ();
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        match s.to_lowercase().as_str() {
+            "pending" => Ok(TaskStatus::Pending),
+            "running" => Ok(TaskStatus::Running),
+            "completed" => Ok(TaskStatus::Completed),
+            "failed" => Ok(TaskStatus::Failed),
+            _ => Err(()),
         }
     }
 }
