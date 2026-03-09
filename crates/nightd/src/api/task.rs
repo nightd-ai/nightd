@@ -8,42 +8,42 @@ use std::convert::TryFrom;
 use time::format_description::well_known::Rfc3339;
 use uuid::Uuid;
 
-use crate::api::{AppError, AppState};
+use crate::api::{App, AppError};
 use crate::models::{self, Task, TaskStatus};
 
 #[derive(Deserialize)]
 pub(crate) struct CreateTaskRequest {
-    pub prompt: String,
+    prompt: String,
 }
 
 #[derive(Serialize)]
 pub(crate) struct CreateTaskResponse {
-    pub task_id: String,
-    pub status: String,
+    task_id: String,
+    status: String,
 }
 
 #[derive(Serialize)]
 pub(crate) struct TaskDto {
-    pub id: String,
-    pub prompt: String,
-    pub status: String,
-    pub response: Option<String>,
-    pub exit_code: Option<i32>,
-    pub created_at: String,
-    pub started_at: Option<String>,
-    pub completed_at: Option<String>,
+    id: String,
+    prompt: String,
+    status: String,
+    response: Option<String>,
+    exit_code: Option<i32>,
+    created_at: String,
+    started_at: Option<String>,
+    completed_at: Option<String>,
 }
 
 #[derive(Serialize)]
 pub(crate) struct TaskListResponse {
-    pub tasks: Vec<TaskDto>,
-    pub total: usize,
+    tasks: Vec<TaskDto>,
+    total: usize,
 }
 
 #[derive(Deserialize)]
 pub(crate) struct ListTasksQuery {
-    pub status: Option<String>,
-    pub limit: Option<i64>,
+    status: Option<String>,
+    limit: Option<i64>,
 }
 
 impl From<Task> for TaskDto {
@@ -78,7 +78,7 @@ fn extract_json<T>(
 }
 
 pub(crate) async fn create_handler(
-    State(state): State<AppState>,
+    State(state): State<App>,
     result: Result<Json<CreateTaskRequest>, axum::extract::rejection::JsonRejection>,
 ) -> Result<(StatusCode, Json<CreateTaskResponse>), AppError> {
     let request = extract_json(result)?;
@@ -94,7 +94,7 @@ pub(crate) async fn create_handler(
 }
 
 pub(crate) async fn list_handler(
-    State(state): State<AppState>,
+    State(state): State<App>,
     Query(query): Query<ListTasksQuery>,
 ) -> Result<Json<TaskListResponse>, AppError> {
     let status = query
@@ -116,7 +116,7 @@ pub(crate) async fn list_handler(
 }
 
 pub(crate) async fn get_handler(
-    State(state): State<AppState>,
+    State(state): State<App>,
     Path(task_id): Path<Uuid>,
 ) -> Result<Json<TaskDto>, AppError> {
     let task = models::get_task(&state.db_pool, &task_id).await?;

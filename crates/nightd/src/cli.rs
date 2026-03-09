@@ -1,10 +1,7 @@
-use crate::api::create_app;
-use crate::db;
-use crate::worker::Worker;
 use clap::{Parser, Subcommand};
-use std::net::SocketAddr;
 use std::path::PathBuf;
-use tracing::{error, info};
+
+use crate::app;
 
 #[derive(Parser)]
 #[command(name = "nightd")]
@@ -47,83 +44,7 @@ pub async fn run() {
             concurrency,
             database,
         } => {
-            start(host, port, concurrency, database).await;
-        }
-    }
-}
-
-async fn start(host: String, port: u16, concurrency: usize, database: PathBuf) {
-    let addr: SocketAddr = format!("{}:{}", host, port)
-        .parse()
-        .expect("Failed to parse address");
-
-    // Resolve database path - if relative, use data directory
-    let database_path = if database.is_relative() {
-        dirs::data_dir()
-            .map(|d| d.join("nightd").join(&database))
-            .unwrap_or_else(|| database)
-    } else {
-        database
-    };
-
-    // Ensure parent directory exists
-    if let Some(parent) = database_path.parent()
-        && !parent.exists()
-    {
-        std::fs::create_dir_all(parent).expect("Failed to create database directory");
-    }
-
-    // Initialize database
-    let database_url = format!("sqlite://{}", database_path.display());
-    info!("Initializing database at {:?}", database_path);
-    let pool = match db::init(&database_url).await {
-        Ok(pool) => pool,
-        Err(e) => {
-            error!("Failed to initialize database: {}", e);
-            std::process::exit(1);
-        }
-    };
-    info!("Database initialized successfully");
-
-    // Start background worker
-    info!(
-        "Starting background worker with concurrency: {}",
-        concurrency
-    );
-    let worker = match Worker::new(pool.clone(), concurrency).await {
-        Ok(worker) => worker,
-        Err(e) => {
-            error!("Failed to initialize worker: {}", e);
-            std::process::exit(1);
-        }
-    };
-
-    // Spawn worker in background
-    let worker_handle = tokio::spawn(async move {
-        if let Err(e) = worker.run().await {
-            error!("Worker error: {}", e);
-        }
-    });
-
-    // Create API with database pool
-    let app = create_app(pool);
-
-    // Start server
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    info!(
-        "Starting nightd daemon on {} (concurrency: {}, database: {:?})",
-        addr, concurrency, database_path
-    );
-
-    // Run server and worker concurrently
-    tokio::select! {
-        result = axum::serve(listener, app) => {
-            if let Err(e) = result {
-                error!("Server error: {}", e);
-            }
-        }
-        _ = worker_handle => {
-            error!("Worker terminated unexpectedly");
+            app::run(host, port, concurrency, database).await;
         }
     }
 }

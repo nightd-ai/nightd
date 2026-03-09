@@ -6,6 +6,7 @@ use axum::{
 };
 use serde::Serialize;
 use sqlx::SqlitePool;
+use std::net::SocketAddr;
 
 mod status;
 mod task;
@@ -56,12 +57,12 @@ impl IntoResponse for AppError {
 }
 
 #[derive(Clone)]
-pub struct AppState {
-    pub(crate) db_pool: SqlitePool,
+pub struct App {
+    db_pool: SqlitePool,
 }
 
-pub fn create_app(db_pool: SqlitePool) -> Router {
-    let state = AppState { db_pool };
+pub fn router(db_pool: SqlitePool) -> Router {
+    let state = App { db_pool };
 
     Router::new()
         .route("/status", get(status::handler))
@@ -69,4 +70,36 @@ pub fn create_app(db_pool: SqlitePool) -> Router {
         .route("/tasks", get(task::list_handler))
         .route("/tasks/{task_id}", get(task::get_handler))
         .with_state(state)
+}
+
+pub(crate) async fn run(app: Router, host: &str, port: u16) -> std::io::Result<()> {
+    let addr: SocketAddr = format!("{}:{}", host, port)
+        .parse()
+        .expect("Failed to parse address");
+
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+}
+
+async fn shutdown_signal() {
+    #[cfg(unix)]
+    {
+        use tokio::signal::unix::{SignalKind, signal};
+        let mut sigterm =
+            signal(SignalKind::terminate()).expect("Failed to create SIGTERM handler");
+        let mut sigint = signal(SignalKind::interrupt()).expect("Failed to create SIGINT handler");
+
+        tokio::select! {
+            _ = sigterm.recv() => {},
+            _ = sigint.recv() => {},
+        }
+    }
+
+    #[cfg(windows)]
+    {
+        let _ = tokio::signal::ctrl_c().await;
+    }
 }

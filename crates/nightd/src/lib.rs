@@ -1,6 +1,7 @@
 pub(crate) mod acp;
 pub mod api;
+pub(crate) mod app;
 pub mod cli;
 pub mod db;
 pub mod models;
-pub mod worker;
+pub(crate) mod worker;

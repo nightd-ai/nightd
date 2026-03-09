@@ -2,10 +2,11 @@ use nightd::db;
 use nightd::models::{
     TaskStatus, count_tasks_by_status, create_task, fail_task, get_all_tasks, mark_task_running,
 };
+use std::path::PathBuf;
 
 #[tokio::test]
 async fn test_run_command_creates_task() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     // Create a task via the API to verify it works
     let task = create_task(&pool, "test prompt").await.unwrap();
@@ -15,7 +16,7 @@ async fn test_run_command_creates_task() {
 
 #[tokio::test]
 async fn test_status_shows_counts() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     // Create tasks in different states
     let running = create_task(&pool, "running task").await.unwrap();
@@ -44,7 +45,7 @@ async fn test_status_shows_counts() {
 
 #[tokio::test]
 async fn test_list_tasks_format() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     // Create tasks
     create_task(&pool, "task 1").await.unwrap();

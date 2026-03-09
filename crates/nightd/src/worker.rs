@@ -173,7 +173,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_worker_processes_pending_tasks() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         // Create some tasks
         crate::models::create_task(&pool, "task 1").await.unwrap();
@@ -207,7 +209,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_concurrency_limits_execution() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         // Create many tasks
         for i in 0..10 {

@@ -1,16 +1,17 @@
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
-use nightd::api::create_app;
+use nightd::api;
 use nightd::db;
 use nightd::models::TaskStatus;
+use std::path::PathBuf;
 use tower::util::ServiceExt;
 
 #[tokio::test]
 async fn test_create_task_endpoint() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .method("POST")
@@ -34,10 +35,10 @@ async fn test_create_task_endpoint() {
 
 #[tokio::test]
 async fn test_create_task_invalid_json() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .method("POST")
@@ -54,14 +55,14 @@ async fn test_create_task_invalid_json() {
 
 #[tokio::test]
 async fn test_list_tasks_endpoint() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     nightd::models::create_task(&pool, "task 1").await.unwrap();
     nightd::models::create_task(&pool, "task 2").await.unwrap();
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks")
@@ -84,7 +85,7 @@ async fn test_list_tasks_endpoint() {
 
 #[tokio::test]
 async fn test_list_tasks_with_status_filter() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     let task = nightd::models::create_task(&pool, "pending task")
         .await
@@ -96,9 +97,9 @@ async fn test_list_tasks_with_status_filter() {
         .await
         .unwrap();
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks?status=pending")
@@ -120,7 +121,7 @@ async fn test_list_tasks_with_status_filter() {
 
 #[tokio::test]
 async fn test_list_tasks_with_limit() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     for i in 0..10 {
         nightd::models::create_task(&pool, &format!("task {}", i))
@@ -128,9 +129,9 @@ async fn test_list_tasks_with_limit() {
             .unwrap();
     }
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks?limit=3")
@@ -151,16 +152,16 @@ async fn test_list_tasks_with_limit() {
 
 #[tokio::test]
 async fn test_get_task_endpoint() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     let task = nightd::models::create_task(&pool, "test task")
         .await
         .unwrap();
     let task_id = task.id.to_string();
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri(&format!("/tasks/{}", task_id))
@@ -183,10 +184,10 @@ async fn test_get_task_endpoint() {
 
 #[tokio::test]
 async fn test_get_task_not_found() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks/00000000-0000-0000-0000-000000000000")
@@ -201,10 +202,10 @@ async fn test_get_task_not_found() {
 
 #[tokio::test]
 async fn test_get_task_invalid_uuid() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks/invalid-uuid")
@@ -219,10 +220,10 @@ async fn test_get_task_invalid_uuid() {
 
 #[tokio::test]
 async fn test_full_task_lifecycle() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool.clone());
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool.clone());
 
-    let response = app
+    let response = router
         .clone()
         .oneshot(
             Request::builder()
@@ -249,7 +250,7 @@ async fn test_full_task_lifecycle() {
         .unwrap();
     assert_eq!(task.status, TaskStatus::Pending);
 
-    let response = app
+    let response = router
         .clone()
         .oneshot(
             Request::builder()
@@ -270,23 +271,24 @@ async fn test_full_task_lifecycle() {
 
 #[tokio::test]
 async fn test_concurrent_task_creation() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool.clone());
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool.clone());
 
     let mut handles = vec![];
     for i in 0..10 {
-        let app = app.clone();
+        let router = router.clone();
         let handle = tokio::spawn(async move {
-            app.oneshot(
-                Request::builder()
-                    .method("POST")
-                    .uri("/tasks")
-                    .header("content-type", "application/json")
-                    .body(Body::from(format!(r#"{{"prompt": "task {}"}}"#, i)))
-                    .unwrap(),
-            )
-            .await
-            .unwrap()
+            router
+                .oneshot(
+                    Request::builder()
+                        .method("POST")
+                        .uri("/tasks")
+                        .header("content-type", "application/json")
+                        .body(Body::from(format!(r#"{{"prompt": "task {}"}}"#, i)))
+                        .unwrap(),
+                )
+                .await
+                .unwrap()
         });
         handles.push(handle);
     }
@@ -303,10 +305,10 @@ async fn test_concurrent_task_creation() {
 
 #[tokio::test]
 async fn test_task_response_storage() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool.clone());
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool.clone());
 
-    let response = app
+    let response = router
         .clone()
         .oneshot(
             Request::builder()
@@ -335,7 +337,7 @@ async fn test_task_response_storage() {
         .await
         .unwrap();
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri(&format!("/tasks/{}", task_id))
@@ -360,10 +362,10 @@ async fn test_task_response_storage() {
 
 #[tokio::test]
 async fn test_empty_task_list() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks")
@@ -385,14 +387,14 @@ async fn test_empty_task_list() {
 
 #[tokio::test]
 async fn test_invalid_status_filter() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     nightd::models::create_task(&pool, "task 1").await.unwrap();
     nightd::models::create_task(&pool, "task 2").await.unwrap();
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/tasks?status=invalid")

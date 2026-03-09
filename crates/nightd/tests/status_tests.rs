@@ -1,16 +1,17 @@
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
-use nightd::api::create_app;
+use nightd::api;
 use nightd::db;
 use nightd::models;
+use std::path::PathBuf;
 use tower::util::ServiceExt;
 
 #[tokio::test]
 async fn test_status_endpoint() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/status")
@@ -25,10 +26,10 @@ async fn test_status_endpoint() {
 
 #[tokio::test]
 async fn test_status_response_body() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
-    let app = create_app(pool);
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/status")
@@ -53,7 +54,7 @@ async fn test_status_response_body() {
 
 #[tokio::test]
 async fn test_status_includes_task_counts() {
-    let pool = db::init("sqlite::memory:").await.unwrap();
+    let pool = db::init(PathBuf::from(":memory:")).await.unwrap();
 
     let _pending_task1 = models::create_task(&pool, "test task 1").await.unwrap();
     let _pending_task2 = models::create_task(&pool, "test task 2").await.unwrap();
@@ -70,9 +71,9 @@ async fn test_status_includes_task_counts() {
         .await
         .unwrap();
 
-    let app = create_app(pool);
+    let router = api::router(pool);
 
-    let response = app
+    let response = router
         .oneshot(
             Request::builder()
                 .uri("/status")

@@ -377,7 +377,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_create_and_get_task() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         let task = create_task(&pool, "test prompt").await.unwrap();
         assert_eq!(task.prompt, "test prompt");
@@ -393,7 +395,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_next_pending() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         // Should return None when no tasks
         let result = get_next_pending(&pool).await.unwrap();
@@ -410,7 +414,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_task_status_transitions() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         let task = create_task(&pool, "test task").await.unwrap();
 
@@ -431,7 +437,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_fail_task() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         let task = create_task(&pool, "failing task").await.unwrap();
         mark_task_running(&pool, &task.id).await.unwrap();
@@ -445,7 +453,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_count_and_get_tasks_by_status() {
-        let pool = db::init("sqlite::memory:").await.unwrap();
+        let pool = db::init(std::path::PathBuf::from(":memory:"))
+            .await
+            .unwrap();
 
         // Create tasks with different statuses
         let task1 = create_task(&pool, "task 1").await.unwrap();
