@@ -10,3 +10,6 @@ site/
 
 # SQLite database for development
 nightd.db
+
+# Cocoindex
+.cocoindex_code
