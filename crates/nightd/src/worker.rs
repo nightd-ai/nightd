@@ -1,4 +1,5 @@
 use crate::acp::AcpClient;
+use crate::models;
 use sqlx::SqlitePool;
 use std::sync::Arc;
 use thiserror::Error;
@@ -49,7 +50,7 @@ impl Worker {
                 .expect("Semaphore should not be closed");
 
             // Try to get a pending task
-            match crate::models::get_next_pending(&self.db_pool).await? {
+            match models::get_next_pending(&self.db_pool).await? {
                 Some(task) => {
                     info!("Processing task {}: {}", task.id, task.prompt);
 
@@ -72,7 +73,7 @@ impl Worker {
 }
 
 async fn process_task(
-    task: crate::models::Task,
+    task: models::Task,
     client: AcpClient,
     pool: SqlitePool,
     _permit: OwnedSemaphorePermit,
@@ -80,7 +81,7 @@ async fn process_task(
     let task_id = task.id;
 
     // Mark as running
-    if let Err(e) = crate::models::mark_task_running(&pool, &task_id).await {
+    if let Err(e) = models::mark_task_running(&pool, &task_id).await {
         error!("Failed to mark task {} as running: {}", task_id, e);
         return;
     }
@@ -92,7 +93,7 @@ async fn process_task(
         Ok(response) => {
             info!("Task {} completed successfully", task_id);
 
-            if let Err(e) = crate::models::complete_task(&pool, &task_id, &response, 0).await {
+            if let Err(e) = models::complete_task(&pool, &task_id, &response, 0).await {
                 error!("Failed to mark task {} as completed: {}", task_id, e);
             }
         }
@@ -100,7 +101,7 @@ async fn process_task(
             warn!("Task {} failed: {}", task_id, e);
 
             let error_msg = e.to_string();
-            if let Err(e) = crate::models::fail_task(&pool, &task_id, &error_msg).await {
+            if let Err(e) = models::fail_task(&pool, &task_id, &error_msg).await {
                 error!("Failed to mark task {} as failed: {}", task_id, e);
             }
         }
@@ -137,7 +138,7 @@ impl TestWorker {
                 .await
                 .expect("Semaphore should not be closed");
 
-            match crate::models::get_next_pending(&self.db_pool).await? {
+            match models::get_next_pending(&self.db_pool).await? {
                 Some(task) => {
                     let pool = self.db_pool.clone();
                     let mock_fn = mock_fn.clone();
@@ -145,9 +146,9 @@ impl TestWorker {
                     let prompt = task.prompt.clone();
 
                     tokio::spawn(async move {
-                        crate::models::mark_task_running(&pool, &task_id).await.ok();
+                        models::mark_task_running(&pool, &task_id).await.ok();
                         let response = mock_fn(&prompt);
-                        crate::models::complete_task(&pool, &task_id, &response, 0)
+                        models::complete_task(&pool, &task_id, &response, 0)
                             .await
                             .ok();
                         drop(permit);
@@ -178,8 +179,8 @@ mod tests {
             .unwrap();
 
         // Create some tasks
-        crate::models::create_task(&pool, "task 1").await.unwrap();
-        crate::models::create_task(&pool, "task 2").await.unwrap();
+        models::create_task(&pool, "task 1").await.unwrap();
+        models::create_task(&pool, "task 2").await.unwrap();
 
         let worker = TestWorker::new(pool.clone(), 2);
 
@@ -194,14 +195,14 @@ mod tests {
 
         // Verify tasks were processed
         let completed =
-            crate::models::count_tasks_by_status(&pool, crate::models::TaskStatus::Completed)
+            models::count_tasks_by_status(&pool, models::TaskStatus::Completed)
                 .await
                 .unwrap();
 
         assert_eq!(completed, 2);
 
         let pending =
-            crate::models::count_tasks_by_status(&pool, crate::models::TaskStatus::Pending)
+            models::count_tasks_by_status(&pool, models::TaskStatus::Pending)
                 .await
                 .unwrap();
         assert_eq!(pending, 0);
@@ -215,7 +216,7 @@ mod tests {
 
         // Create many tasks
         for i in 0..10 {
-            crate::models::create_task(&pool, &format!("task {}", i))
+            models::create_task(&pool, &format!("task {}", i))
                 .await
                 .unwrap();
         }
