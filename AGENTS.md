@@ -36,6 +36,10 @@ Before committing changes on code, tests or dependencies run `mise run test`.
 
 Commits have to be signed off. ALWAYS use `git commit --signoff`, when committing changes.
 
+### Commit Messages
+
+Use conventional commits for commit messages. Keep them concise and descriptive.
+
 ## Coding Rules
 
 ### UUID
