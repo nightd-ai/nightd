@@ -9,8 +9,20 @@ wheels/
 # Virtual environments
 .venv
 
+# Rust
+target
+
 # Website
 site/
 
+# Cocoindex
+.cocoindex_code
+
 # Local environment variables
 .env
+
+# MLflow
+mlruns/
+mlartifacts/
+mlflow.db
+mlflow-data

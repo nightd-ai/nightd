@@ -7,6 +7,9 @@ dependencies = [
     "fastapi[standard]>=0.132.0",
     "typer>=0.24.1",
     "uvicorn>=0.27.0",
+    "claude-agent-sdk>=0.1.0",
+    "anthropic>=0.18.0",
+    "mlflow>=3.5.0",
 ]
 
 [project.scripts]

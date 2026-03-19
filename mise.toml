@@ -1,4 +1,16 @@
 
+[tasks.mlflow]
+description = "Start MLflow tracking server via Docker Compose"
+run = ["docker compose -f docker-compose.mlflow.yml up -d"]
+
+[tasks.mlflow-logs]
+description = "Show MLflow container logs"
+run = ["docker compose -f docker-compose.mlflow.yml logs -f"]
+
+[tasks.mlflow-down]
+description = "Stop MLflow tracking server"
+run = ["docker compose -f docker-compose.mlflow.yml down"]
+
 [tasks.test]
 description = "Run all checks on this project"
 run = [
@@ -12,6 +24,7 @@ run = [
 python.uv_venv_auto = true
 
 [env]
+MLFLOW_TRACKING_URI = "http://localhost:5000"
 _.file = '.env'
 
 [tools]
