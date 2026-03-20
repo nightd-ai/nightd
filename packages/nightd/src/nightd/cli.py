@@ -16,6 +16,6 @@ def start(
     port: int = typer.Option(8000, "--port", "-p", help="Port to bind to"),
 ) -> None:
     """Start the nightd daemon."""
-    from daemon.api import app as fastapi_app
+    from nightd.api import app as fastapi_app
 
     uvicorn.run(fastapi_app, host=host, port=port)
