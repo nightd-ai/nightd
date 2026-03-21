@@ -1,61 +1,96 @@
-"""Main orchestrator that coordinates the workflow between agents."""
+"""Orchestrator agent that coordinates the workflow between agents using Pydantic AI."""
 
 import logging
 
-from .spec_writer import write_spec
-from .coder import implement_spec
-from .reviewer import review_changes
+import mlflow
+from pydantic_ai import Agent, RunContext
+
+from nightd.agents.spec_writer import write_spec
+from nightd.agents.coder import implement_spec
+from nightd.agents.reviewer import review_changes
 
 logger = logging.getLogger(__name__)
 
+orchestrator_agent = Agent(
+    model="claude-sonnet-4-6",
+    system_prompt=(
+        "You are a workflow orchestrator agent. Your role is to coordinate the software "
+        "development workflow by intelligently deciding when to call each specialized agent. "
+        "You have access to three tools:\n\n"
+        "1. write_spec: Creates an implementation plan/specification for a given task\n"
+        "2. implement_spec: Implements code changes based on a specification\n"
+        "3. review_changes: Reviews implemented code against the original specification\n\n"
+        "Analyze the task and use the appropriate tools to complete the workflow. "
+        "You can call tools multiple times if needed, iterate on work, or skip steps "
+        "that don't make sense for the task. Be flexible and intelligent in your approach."
+    ),
+)
 
+
+@orchestrator_agent.tool
+async def write_spec_tool(ctx: RunContext, task_description: str) -> str:
+    """Create an implementation plan/specification for a coding task.
+
+    Args:
+        task_description: Description of the coding task to analyze.
+
+    Returns:
+        The generated implementation plan/spec text.
+    """
+    logger.info("Orchestrator calling write_spec tool")
+    return await write_spec(task_description)
+
+
+@orchestrator_agent.tool
+async def implement_spec_tool(ctx: RunContext, spec: str) -> str:
+    """Implement code changes based on the provided specification.
+
+    Args:
+        spec: The specification describing the changes to implement.
+
+    Returns:
+        Implementation summary of what was done.
+    """
+    logger.info("Orchestrator calling implement_spec tool")
+    return await implement_spec(spec)
+
+
+@orchestrator_agent.tool
+async def review_changes_tool(
+    ctx: RunContext, spec: str, implementation_summary: str
+) -> str:
+    """Review implemented code changes against the original specification.
+
+    Args:
+        spec: The original specification describing what was to be implemented.
+        implementation_summary: Summary of the implementation that was completed.
+
+    Returns:
+        Review text with feedback on the implementation.
+    """
+    logger.info("Orchestrator calling review_changes tool")
+    return await review_changes(spec, implementation_summary)
+
+
+@mlflow.trace()
 async def run_workflow(task_description: str) -> dict:
-    """Run the complete workflow from spec writing through review.
+    """Run the workflow orchestrator to complete a task.
 
     Args:
         task_description: Description of the task to be completed.
 
     Returns:
-        Dict containing spec, implementation, and review results.
-        If any step fails, partial results are returned with error info.
+        Dict containing the orchestrator's response and any tool results.
     """
-    logger.info("Starting workflow for task: %s", task_description[:50] + "...")
+    logger.info(
+        "Starting orchestrated workflow for task: %s", task_description[:50] + "..."
+    )
 
-    result = {
-        "spec": None,
-        "implementation": None,
-        "review": None,
+    result = await orchestrator_agent.run(task_description)
+
+    logger.info("Workflow completed")
+
+    return {
+        "response": result.data,  # type: ignore[union-attr]
+        "messages": result.messages if hasattr(result, "messages") else None,
     }
-
-    try:
-        logger.info("Step 1: Writing spec")
-        spec = await write_spec(task_description)
-        result["spec"] = spec
-        logger.info("Spec created successfully")
-    except Exception as e:
-        logger.error("Spec writing failed: %s", e)
-        result["spec"] = {"error": str(e)}
-        return result
-
-    try:
-        logger.info("Step 2: Implementing spec")
-        implementation_summary = await implement_spec(spec)
-        result["implementation"] = implementation_summary
-        logger.info("Implementation completed successfully")
-    except Exception as e:
-        logger.error("Implementation failed: %s", e)
-        result["implementation"] = {"error": str(e)}
-        return result
-
-    try:
-        logger.info("Step 3: Reviewing changes")
-        review = await review_changes(spec, implementation_summary)
-        result["review"] = review
-        logger.info("Review completed successfully")
-    except Exception as e:
-        logger.error("Review failed: %s", e)
-        result["review"] = {"error": str(e)}
-        return result
-
-    logger.info("Workflow completed successfully")
-    return result
