@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
 mlflow.set_experiment(settings.mlflow_experiment_name)
 mlflow.pydantic_ai.autolog()
+mlflow.anthropic.autolog()
 
 orchestrator_agent = Agent(
     model="claude-sonnet-4-6",

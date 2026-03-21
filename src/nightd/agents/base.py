@@ -13,14 +13,6 @@ from nightd.config import settings
 # Ensure the API key is available in the environment for the SDK
 os.environ.setdefault("ANTHROPIC_API_KEY", settings.anthropic_api_key)
 
-import mlflow
-import mlflow.anthropic
-
-# Configure MLflow with settings
-mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
-mlflow.set_experiment(settings.mlflow_experiment_name)
-mlflow.anthropic.autolog()
-
 STANDARD_TOOLS = ["Read", "Write", "Edit", "Bash", "WebSearch"]
 
 
@@ -50,7 +42,6 @@ class AgentClient:
 
         self._response_parts = []
 
-        # Use ClaudeSDKClient which supports MLflow tracing
         async with ClaudeSDKClient(options=options) as client:
             await client.query(prompt)
             async for message in client.receive_response():
@@ -110,7 +101,6 @@ async def run_agent(
         permission_mode="acceptEdits",
     )
 
-    # Use ClaudeSDKClient which supports MLflow tracing
     async with ClaudeSDKClient(options=options) as client:
         await client.query(prompt)
         async for message in client.receive_response():
