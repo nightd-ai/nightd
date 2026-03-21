@@ -8,6 +8,14 @@ run = [
   "pytest",
 ]
 
+[tasks.dev]
+description = "Start development environment (Docker Compose)"
+run = "docker-compose up -d"
+
+[tasks.dev-down]
+description = "Shut down development environment"
+run = "docker-compose down"
+
 [settings]
 python.uv_venv_auto = true
 
