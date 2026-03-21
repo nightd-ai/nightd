@@ -1,27 +1,27 @@
 [project]
-name = "nightd-workspace"
+name = "nightd"
 version = "0.1.0"
 description = "A scheduler for autonomous coding agents"
 readme = "README.md"
 license = "FSL-1.1-ALv2"
 requires-python = ">=3.14"
 dependencies = [
-    "nightd",
+  "fastapi[standard]>=0.132.0",
+  "typer>=0.24.1",
+  "uvicorn>=0.27.0",
 ]
+
+[project.scripts]
+nightd = "nightd.cli:app"
 
 [dependency-groups]
 dev = [
-    "nightctl",
-    "pytest>=9.0.2",
-    "respx>=0.22.0",
-    "ruff>=0.15.2",
-    "ty>=0.0.17",
-    "zensical>=0.0.23",
+  "pytest>=9.0.2",
+  "respx>=0.22.0",
+  "ruff>=0.15.2",
+  "ty>=0.0.17",
+  "zensical>=0.0.23",
 ]
 
-[tool.uv.sources]
-nightd = { workspace = true }
-nightctl = { workspace = true }
-
-[tool.uv.workspace]
-members = ["packages/*"]
+[tool.uv]
+package = true

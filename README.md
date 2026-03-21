@@ -5,7 +5,6 @@ A daemon to schedule autonomous coding agents.
 ## CLI Commands
 
 - `nightd start [--host HOST] [--port PORT]` - Start the daemon (default: 127.0.0.1:8000)
-- `nightctl status` - Check if the daemon is running
 
 ## Development
 
@@ -20,7 +19,7 @@ A daemon to schedule autonomous coding agents.
 
    ```bash
    mise install
-   uv sync --all-packages
+   uv sync
    ```
 
 2. Start the daemon:
