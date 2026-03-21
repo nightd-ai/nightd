@@ -5,13 +5,21 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from claude_agent_sdk import query
+from claude_agent_sdk import ClaudeSDKClient
 from claude_agent_sdk.types import ClaudeAgentOptions
 
 from nightd.config import settings
 
 # Ensure the API key is available in the environment for the SDK
 os.environ.setdefault("ANTHROPIC_API_KEY", settings.anthropic_api_key)
+
+import mlflow
+import mlflow.anthropic
+
+# Configure MLflow with settings
+mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+mlflow.set_experiment(settings.mlflow_experiment_name)
+mlflow.anthropic.autolog()
 
 STANDARD_TOOLS = ["Read", "Write", "Edit", "Bash", "WebSearch"]
 
@@ -22,6 +30,7 @@ class AgentClient:
     def __init__(self, system_prompt: str | None = None):
         self.system_prompt = system_prompt
         self._response_parts: list[str] = []
+        self._sdk_client: ClaudeSDKClient | None = None
 
     async def run(self, prompt: str) -> str:
         """Run the agent with the given prompt.
@@ -40,12 +49,16 @@ class AgentClient:
         )
 
         self._response_parts = []
-        async for message in query(prompt=prompt, options=options):
-            # Accumulate response parts
-            if hasattr(message, "content") and message.content:
-                self._response_parts.append(str(message.content))
-            elif isinstance(message, str):
-                self._response_parts.append(message)
+
+        # Use ClaudeSDKClient which supports MLflow tracing
+        async with ClaudeSDKClient(options=options) as client:
+            await client.query(prompt)
+            async for message in client.receive_response():
+                # Accumulate response parts
+                if hasattr(message, "content") and message.content:
+                    self._response_parts.append(str(message.content))
+                elif isinstance(message, str):
+                    self._response_parts.append(message)
 
         return "".join(self._response_parts)
 
@@ -97,5 +110,8 @@ async def run_agent(
         permission_mode="acceptEdits",
     )
 
-    async for message in query(prompt=prompt, options=options):
-        yield message
+    # Use ClaudeSDKClient which supports MLflow tracing
+    async with ClaudeSDKClient(options=options) as client:
+        await client.query(prompt)
+        async for message in client.receive_response():
+            yield message

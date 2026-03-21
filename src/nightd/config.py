@@ -19,6 +19,8 @@ class Settings(BaseSettings):
 
     anthropic_api_key: str = ""
     database_path: str = "nightd.db"
+    mlflow_tracking_uri: str = "http://localhost:5000"
+    mlflow_experiment_name: str = "nightd-dev"
 
     @field_validator("database_path")
     @classmethod
