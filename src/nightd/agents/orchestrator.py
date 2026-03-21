@@ -3,13 +3,20 @@
 import logging
 
 import mlflow
+import mlflow.pydantic_ai
 from pydantic_ai import Agent, RunContext
 
 from nightd.agents.spec_writer import write_spec
 from nightd.agents.coder import implement_spec
 from nightd.agents.reviewer import review_changes
+from nightd.config import settings
 
 logger = logging.getLogger(__name__)
+
+# Enable MLflow tracing for Pydantic AI
+mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+mlflow.set_experiment(settings.mlflow_experiment_name)
+mlflow.pydantic_ai.autolog()
 
 orchestrator_agent = Agent(
     model="claude-sonnet-4-6",
@@ -24,6 +31,7 @@ orchestrator_agent = Agent(
         "You can call tools multiple times if needed, iterate on work, or skip steps "
         "that don't make sense for the task. Be flexible and intelligent in your approach."
     ),
+    instrument=True,
 )
 
 
@@ -72,7 +80,6 @@ async def review_changes_tool(
     return await review_changes(spec, implementation_summary)
 
 
-@mlflow.trace()
 async def run_workflow(task_description: str) -> dict:
     """Run the workflow orchestrator to complete a task.
 
@@ -91,6 +98,6 @@ async def run_workflow(task_description: str) -> dict:
     logger.info("Workflow completed")
 
     return {
-        "response": result.data,  # type: ignore[union-attr]
+        "response": result.output,
         "messages": result.messages if hasattr(result, "messages") else None,
     }
