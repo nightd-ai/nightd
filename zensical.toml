@@ -128,13 +128,13 @@ features = [
   # will generate an edit button for the page. This works for common
   # repository hosting services.
   # https://zensical.org/docs/setup/repository/#content-actions
-  #"content.action.edit",
+  "content.action.edit",
 
   # If you have a repository configured and turn on this feature, Zensical
   # will generate a button that allows the user to view the Markdown
   # code for the current page.
   # https://zensical.org/docs/setup/repository/#content-actions
-  #"content.action.view",
+  "content.action.view",
 
   # Code annotations allow you to add an icon with a tooltip to your
   # code blocks to provide explanations at crucial points.
@@ -201,7 +201,7 @@ features = [
   # In order to provide a better user experience on slow connections when
   # using instant navigation, a progress indicator can be enabled.
   # https://zensical.org/docs/setup/navigation/#progress-indicator
-  #"navigation.instant.progress",
+  "navigation.instant.progress",
 
   # When navigation paths are activated, a breadcrumb navigation is rendered
   # above the title of each page
@@ -221,7 +221,7 @@ features = [
   # When tabs are enabled, top-level sections are rendered in a menu layer
   # below the header for viewports above 1220px, but remain as-is on mobile.
   # https://zensical.org/docs/setup/navigation/#navigation-tabs
-  #"navigation.tabs",
+  "navigation.tabs",
 
   # When sticky tabs are enabled, navigation tabs will lock below the header
   # and always remain visible when scrolling down.
