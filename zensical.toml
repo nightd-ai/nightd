@@ -83,7 +83,7 @@ Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 # Read more:
 # - https://zensical.org/docs/customization/#extending-the-theme
 #
-#custom_dir = "overrides"
+custom_dir = "page/overrides"
 
 # With the "favicon" option you can set your own image to use as the icon
 # browsers will use in the browser title bar or tab bar. The path provided
@@ -303,3 +303,7 @@ toggle.name = "Switch to light mode"
 #[[project.extra.social]]
 #icon = "fontawesome/brands/github"
 #link = "https://github.com/user/repo"
+
+[project.extra.analytics]
+provider = "plausible"
+property = "pa-TSpK_G058UWxpxq9dLQ02"
