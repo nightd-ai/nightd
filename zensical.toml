@@ -27,7 +27,7 @@ site_author = "Jan Ehrhardt and Florian Stefan"
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
 # Read more: https://zensical.org/docs/setup/basics/#site_url
-#site_url = "https://nightd.ai/"
+site_url = "https://nightd.ai/"
 
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
@@ -36,6 +36,11 @@ site_author = "Jan Ehrhardt and Florian Stefan"
 copyright = """
 Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 """
+
+# Github project settings
+repo_url = "https://github.com/nightd-ai/nightd"
+repo_name = "nightd-ai/nightd"
+edit_uri = "edit/main/docs/"
 
 # Zensical supports both implicit navigation and explicitly defined navigation.
 # If you decide not to define a navigation here then Zensical will simply
@@ -303,9 +308,17 @@ toggle.name = "Switch to light mode"
 # ----------------------------------------------------------------------------
 # The "extra" section contains miscellaneous settings.
 # ----------------------------------------------------------------------------
-#[[project.extra.social]]
-#icon = "fontawesome/brands/github"
-#link = "https://github.com/user/repo"
+[[project.extra.social]]
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/XzwUyUQZ9r"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/bluesky"
+link = "https://bsky.app/profile/nightd.ai"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/nightd-ai/nightd"
 
 [project.extra.analytics]
 provider = "plausible"
