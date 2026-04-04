@@ -308,16 +308,16 @@ toggle.name = "Switch to light mode"
 # The "extra" section contains miscellaneous settings.
 # ----------------------------------------------------------------------------
 [[project.extra.social]]
-icon = "fontawesome/brands/discord"
-link = "https://discord.gg/XzwUyUQZ9r"
+icon = "fontawesome/brands/github"
+link = "https://github.com/nightd-ai/nightd"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/bluesky"
 link = "https://bsky.app/profile/nightd.ai"
 
 [[project.extra.social]]
-icon = "fontawesome/brands/github"
-link = "https://github.com/nightd-ai/nightd"
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/XzwUyUQZ9r"
 
 [project.extra.analytics]
 provider = "plausible"

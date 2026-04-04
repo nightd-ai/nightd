@@ -1,41 +1,27 @@
 ---
 title: Welcome to nightd
 ---
-<p style="background: var(--md-primary-fg-color--light); padding: 1rem; border-radius: 0.25rem; margin: 1rem 0;">
-  <strong>🚧 Under Active Development</strong><br>
-  nightd is currently being built. Follow our progress on
-  <a href="https://bsky.app/profile/nightd.ai">Bluesky</a>,
-  <a href="https://discord.gg/XzwUyUQZ9r">Discord</a>, and
-  <a href="https://github.com/nightd-ai/nightd">GitHub</a>!
-</p>
 
-## What is nightd?
+`nightd` is like Docker for AI agent tasks. Instead of working interactively with your coding agent, schedule coding tasks in the background and review the created pull requests.
 
-nightd is a daemon that schedules and orchestrates autonomous coding agents. It provides a reliable infrastructure for running AI-powered development tasks on a schedule.
+!!! warning "Under Active Development"
+
+    `nightd` is currently being built and is not ready for use. You can try it out by checking out the source code. We will provide easy to install releases later. Early adopters welcome — help shape the future!
+
+## How it works
+
+`nightd` runs as a local daemon that manages agent tasks through [ACP](https://agentclientprotocol.com) in [devcontainers](https://containers.dev), supporting [mise](https://mise.jdx.dev) as an easy alternative to writing Dockerfiles. Each task runs in its own [Jujutsu](https://www.jj-vcs.dev) workspace, isolating changes and avoiding conflicts with other sessions. Your agents create branches and submit pull requests on your behalf — all without cloud dependencies.
 
 ## Features
 
-- **Smart Scheduling** — Define when and how often your coding agents should run
-- **REST API** — Control and monitor your agents via a simple HTTP interface
-- **Autonomous Orchestration** — Let agents work independently with proper resource management
-- **Lightweight Daemon** — Minimal resource footprint with reliable uptime
+- **Background Tasks** — Schedule tasks in `nightd` and do something else in the meantime
+- **Agent- and Provider-Agnostic** — Use your existing agentic setup with support for OpenCode, Claude Code and others
+- **Local-first** — Works fully on your laptop without any subscriptions
 
-## Quick Start
+## Join the Community
 
-Start the daemon on the default port:
+We're building nightd in the open and would love your input:
 
-```bash
-nightd start
-```
-
-Or specify custom host and port:
-
-```bash
-nightd start --host 0.0.0.0 --port 8080
-```
-
-## Get Involved
-
-- 💬 Join the conversation on [Discord](https://discord.gg/XzwUyUQZ9r)
-- 🐦 Follow updates on [Bluesky](https://bsky.app/profile/nightd.ai)
-- ⭐ Star us on [GitHub](https://github.com/nightd-ai/nightd)
+- **⭐ Star** us on [GitHub](https://github.com/nightd-ai/nightd) to show support
+- **🦋 Follow** [@nightd.ai](https://bsky.app/profile/nightd.ai) on Bluesky for updates
+- **💬 Join** our [Discord](https://discord.gg/XzwUyUQZ9r) to share feedback and ideas
