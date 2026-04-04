@@ -10,19 +10,28 @@ A daemon to schedule autonomous coding agents.
 
 ### Prerequisites
 
+- [jujutsu](https://www.jj-vcs.dev) for local version control
 - [mise](https://mise.jdx.dev/) for development environment setup
-- [Docker](https://www.docker.com/) to run Supabase locally
+- A coding agent
 
 ### Setup
 
-1. Install tools and dependencies:
+1. Clone the repository:
 
    ```bash
+   jj git clone git@github.com:nightd-ai/nightd.git
+   cd nightd
+   ```
+
+2. Install tools and dependencies:
+
+   ```bash
+   mise trust
    mise install
    uv sync
    ```
 
-2. Start the daemon:
+3. Start the daemon:
 
    ```bash
    nightd start
