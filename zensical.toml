@@ -27,7 +27,7 @@ site_author = "Jan Ehrhardt and Florian Stefan"
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
 # Read more: https://zensical.org/docs/setup/basics/#site_url
-#site_url = "https://nightd.ai/"
+site_url = "https://nightd.ai/"
 
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
@@ -37,6 +37,11 @@ copyright = """
 Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 """
 
+# Github project settings
+repo_url = "https://github.com/nightd-ai/nightd"
+repo_name = "nightd-ai/nightd"
+edit_uri = "edit/main/docs/"
+
 # Zensical supports both implicit navigation and explicitly defined navigation.
 # If you decide not to define a navigation here then Zensical will simply
 # derive the navigation structure from the directory structure of your
@@ -44,10 +49,9 @@ Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 # can be defined using TOML syntax.
 #
 # Read more: https://zensical.org/docs/setup/navigation/
-# nav = [
-#   { "Get started" = "index.md" },
-#   { "Markdown in 5min" = "markdown.md" },
-# ]
+nav = [
+  { "Home" = "index.md" }
+]
 
 # With the "extra_css" option you can add your own CSS styling to customize
 # your Zensical project according to your needs. You can add any number of
@@ -83,7 +87,7 @@ Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 # Read more:
 # - https://zensical.org/docs/customization/#extending-the-theme
 #
-#custom_dir = "overrides"
+custom_dir = "page/overrides"
 
 # With the "favicon" option you can set your own image to use as the icon
 # browsers will use in the browser title bar or tab bar. The path provided
@@ -93,7 +97,8 @@ Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
 # - https://zensical.org/docs/setup/logo-and-icons/#favicon
 # - https://developer.mozilla.org/en-US/docs/Glossary/Favicon
 #
-#favicon = "images/favicon.png"
+favicon = "images/cozy-logo.svg"
+logo = "images/cozy-logo.svg"
 
 # Zensical supports more than 60 different languages. This means that the
 # labels and tooltips that Zensical's templates produce are translated.
@@ -122,13 +127,13 @@ features = [
   # will generate an edit button for the page. This works for common
   # repository hosting services.
   # https://zensical.org/docs/setup/repository/#content-actions
-  #"content.action.edit",
+  "content.action.edit",
 
   # If you have a repository configured and turn on this feature, Zensical
   # will generate a button that allows the user to view the Markdown
   # code for the current page.
   # https://zensical.org/docs/setup/repository/#content-actions
-  #"content.action.view",
+  "content.action.view",
 
   # Code annotations allow you to add an icon with a tooltip to your
   # code blocks to provide explanations at crucial points.
@@ -195,7 +200,7 @@ features = [
   # In order to provide a better user experience on slow connections when
   # using instant navigation, a progress indicator can be enabled.
   # https://zensical.org/docs/setup/navigation/#progress-indicator
-  #"navigation.instant.progress",
+  "navigation.instant.progress",
 
   # When navigation paths are activated, a breadcrumb navigation is rendered
   # above the title of each page
@@ -215,7 +220,7 @@ features = [
   # When tabs are enabled, top-level sections are rendered in a menu layer
   # below the header for viewports above 1220px, but remain as-is on mobile.
   # https://zensical.org/docs/setup/navigation/#navigation-tabs
-  #"navigation.tabs",
+  # "navigation.tabs",
 
   # When sticky tabs are enabled, navigation tabs will lock below the header
   # and always remain visible when scrolling down.
@@ -259,11 +264,13 @@ features = [
 # - https://zensical.org/docs/setup/colors/
 # ----------------------------------------------------------------------------
 [[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
 scheme = "default"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
@@ -300,6 +307,18 @@ toggle.name = "Switch to light mode"
 # ----------------------------------------------------------------------------
 # The "extra" section contains miscellaneous settings.
 # ----------------------------------------------------------------------------
-#[[project.extra.social]]
-#icon = "fontawesome/brands/github"
-#link = "https://github.com/user/repo"
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/nightd-ai/nightd"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/bluesky"
+link = "https://bsky.app/profile/nightd.ai"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/XzwUyUQZ9r"
+
+[project.extra.analytics]
+provider = "plausible"
+property = "pa-TSpK_G058UWxpxq9dLQ02"
