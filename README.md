@@ -10,20 +10,12 @@ A daemon to schedule autonomous coding agents.
 
 ### Prerequisites
 
-- [jujutsu](https://www.jj-vcs.dev) for local version control
 - [mise](https://mise.jdx.dev/) for development environment setup
 - A coding agent
 
 ### Setup
 
-1. Clone the repository:
-
-   ```bash
-   jj git clone git@github.com:nightd-ai/nightd.git
-   cd nightd
-   ```
-
-2. Install tools and dependencies:
+1. Install tools and dependencies:
 
    ```bash
    mise trust
@@ -31,7 +23,7 @@ A daemon to schedule autonomous coding agents.
    uv sync
    ```
 
-3. Start the daemon:
+2. Start the daemon:
 
    ```bash
    nightd start
