@@ -1,10 +1,6 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
+# Rust
+target/
+Cargo.lock
 
 # Virtual environments
 .venv
