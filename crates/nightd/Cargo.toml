@@ -6,8 +6,4 @@ license.workspace = true
 repository.workspace = true
 description = "A daemon to schedule autonomous coding agents"
 
-[[bin]]
-name = "nightd"
-path = "src/main.rs"
-
 [dependencies]

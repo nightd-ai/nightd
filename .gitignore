@@ -2,14 +2,8 @@
 target/
 Cargo.lock
 
-# Virtual environments
-.venv
-
 # Website
 site/
 
 # Local environment variables
 .env
-
-# Cocoindex
-.cocoindex_code
