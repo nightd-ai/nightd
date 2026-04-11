@@ -50,7 +50,11 @@ edit_uri = "edit/main/docs/"
 #
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
-  { "Home" = "index.md" }
+  { "Home" = "index.md" },
+  { "Architecture" = [
+    { "Overview" = "adr/index.md" },
+    { "ADR 001: ACP Native" = "adr/001-acp-native-architecture.md" }
+  ]}
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
@@ -122,6 +126,11 @@ features = [
   # dismiss it when they have read the announcement.
   # https://zensical.org/docs/setup/header/#announcement-bar
   "announce.dismiss",
+
+  # When tabs are enabled, top-level sections are rendered in a menu layer
+  # below the header for viewports above 1220px, but remain as-is on mobile.
+  # https://zensical.org/docs/setup/navigation/#navigation-tabs
+  "navigation.tabs",
 
   # If you have a repository configured and turn on this feature, Zensical
   # will generate an edit button for the page. This works for common
