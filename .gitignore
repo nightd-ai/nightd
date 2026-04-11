@@ -1,19 +1,9 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
-
-# Virtual environments
-.venv
+# Rust
+target/
+Cargo.lock
 
 # Website
 site/
 
 # Local environment variables
 .env
-
-# Cocoindex
-.cocoindex_code

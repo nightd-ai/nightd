@@ -1,0 +1,9 @@
+[package]
+name = "nightd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "A daemon to schedule autonomous coding agents"
+
+[dependencies]

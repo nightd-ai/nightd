@@ -2,16 +2,11 @@
 
 A daemon to schedule autonomous coding agents.
 
-## CLI Commands
-
-- `nightd start [--host HOST] [--port PORT]` - Start the daemon (default: 127.0.0.1:8000)
-
 ## Development
 
 ### Prerequisites
 
 - [mise](https://mise.jdx.dev/) for development environment setup
-- A coding agent
 
 ### Setup
 
@@ -20,13 +15,18 @@ A daemon to schedule autonomous coding agents.
    ```bash
    mise trust
    mise install
-   uv sync
    ```
 
-2. Start the daemon:
+2. Build the project:
 
    ```bash
-   nightd start
+   cargo build
+   ```
+
+3. Run the daemon:
+
+   ```bash
+   cargo run --bin nightd
    ```
 
 ### Tests
@@ -34,7 +34,27 @@ A daemon to schedule autonomous coding agents.
 You can run the tests via:
 
 ```bash
-pytest
+cargo test
+```
+
+Or use mise:
+
+```bash
+mise run test
+```
+
+### Code Quality
+
+Format code:
+
+```bash
+cargo fmt
+```
+
+Run clippy:
+
+```bash
+cargo clippy --all-targets --all-features -- -D warnings
 ```
 
 ### Documentation
@@ -42,5 +62,5 @@ pytest
 To run the documentation locally:
 
 ```bash
-zensical serve
+uvx zensical serve
 ```
