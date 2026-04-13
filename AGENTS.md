@@ -4,9 +4,22 @@
 
 CRITICAL: NEVER try to read or write to `.env`. ALWAYS ask the user to modify it.
 
-### Github
+## Dependencies
 
-Always enable automerge (--sqash) on non-draft pull requests.
+To add a new dependency add it to the crate with `cargo add -p`. Example:
+
+```bash
+cargo add -p nightctl clap --features=derive
+```
+
+ALWAYS check, if a dependency is already used by another crate. If a dependency is used by at least 2 crates. Move its version management to the Cargo workspace and reference it from each create. Example:
+
+```toml
+[dependencies]
+clap.workspace = true
+```
+
+## Committing
 
 ### Pre-commit Checklist
 
