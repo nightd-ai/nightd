@@ -9,3 +9,5 @@ license = "Apache-2.0"
 repository = "https://github.com/nightd-ai/nightd"
 
 [workspace.dependencies]
+clap = { version = "4.6.0", features = ["derive"] }
+tokio = { version = "1.51.1", features = ["full"] }

@@ -1,3 +1,4 @@
-fn main() {
-    println!("nightctl - CLI for nightd daemon");
+#[tokio::main]
+async fn main() {
+    nightctl::cli::run().await;
 }
