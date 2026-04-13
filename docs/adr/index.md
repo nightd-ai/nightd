@@ -1,6 +1,5 @@
 ---
 title: Architecture Decision Records
-template: section.html
 ---
 
 This section contains Architecture Decision Records (ADRs) documenting the significant architectural decisions made in the `nightd` project.
