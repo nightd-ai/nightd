@@ -23,7 +23,7 @@ jobs:
         with:
           enable-cache: true
       - run: uvx zensical build --clean
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
       - uses: actions/deploy-pages@v5
