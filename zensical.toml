@@ -22,7 +22,7 @@ site_description = "A daemon to schedule autonomous coding agents."
 # The site_author attribute. This is used in the HTML head element.
 #
 # Read more: https://zensical.org/docs/setup/basics/#site_author
-site_author = "Jan Ehrhardt and Florian Stefan"
+site_author = "Cozy Bytes GmbH"
 
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
@@ -53,8 +53,8 @@ nav = [
   { "Home" = "index.md" },
   { "Architecture" = [
     { "Overview" = "adr/index.md" },
-    { "ADR 001: ACP Native" = "adr/001-acp-native-architecture.md" }
-  ]}
+    { "ADR 001: ACP Native" = "adr/001-acp-native-architecture.md" },
+  ] },
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
