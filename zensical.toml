@@ -34,7 +34,7 @@ site_url = "https://nightd.ai/"
 #
 # Read more: https://zensical.org/docs/setup/basics/#copyright
 copyright = """
-Copyright &copy; 2026 Jan Ehrhardt & Florian Stefan
+Copyright &copy; 2026 Cozy Bytes GmbH
 """
 
 # Github project settings
