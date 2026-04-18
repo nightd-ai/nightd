@@ -6,7 +6,7 @@ FSL-1.1-ALv2
 
 ## Notice
 
-Copyright 2026 Jan Ehrhardt und Florian Stefan
+Copyright 2026 Cozy Bytes GmbH
 
 ## Terms and Conditions
 
