@@ -4,6 +4,8 @@
 
 CRITICAL: NEVER try to read or write to `.env`. ALWAYS ask the user to modify it.
 
+`.env` is automatically loaded by `mise`, do not add any library to load it.
+
 ## Dependencies
 
 To add a new dependency add it to the crate with `cargo add -p`. Example:
@@ -23,7 +25,13 @@ clap.workspace = true
 
 ### Pre-commit Checklist
 
-Before committing changes on code, tests or dependencies run `mise run test`.
+Before committing changes on code, tests or dependencies do the following tasks:
+
+- Format code - `cargo fmt`
+- Run compile - `cargo check`
+- Run linter - `cargo clippy -- -D warnings`
+- Run tests - `cargo test`
+- Fix all compile, linting and test errors and warnings
 
 ### Commit Signing
 

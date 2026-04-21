@@ -13,7 +13,6 @@ A daemon to schedule autonomous coding agents.
 1. Install tools and dependencies:
 
    ```bash
-   mise trust
    mise install
    ```
 
@@ -35,26 +34,6 @@ You can run the tests via:
 
 ```bash
 cargo test
-```
-
-Or use mise:
-
-```bash
-mise run test
-```
-
-### Code Quality
-
-Format code:
-
-```bash
-cargo fmt
-```
-
-Run clippy:
-
-```bash
-cargo clippy --all-targets --all-features -- -D warnings
 ```
 
 ### Documentation
