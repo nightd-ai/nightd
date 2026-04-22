@@ -6,23 +6,18 @@ A daemon to schedule autonomous coding agents.
 
 ### Prerequisites
 
-- [mise](https://mise.jdx.dev/) for development environment setup
+- [Rust](https://rust-lang.org/tools/install/)
+- [uvx](https://docs.astral.sh/uv/getting-started/installation/) - for documentation
 
 ### Setup
 
-1. Install tools and dependencies:
-
-   ```bash
-   mise install
-   ```
-
-2. Build the project:
+1. Build the project:
 
    ```bash
    cargo build
    ```
 
-3. Run the daemon:
+2. Run the daemon:
 
    ```bash
    cargo run --bin nightd

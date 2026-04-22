@@ -7,8 +7,6 @@ repository.workspace = true
 description = "A daemon to schedule autonomous coding agents"
 
 [dependencies]
-agent = { path = "../agent" }
-executor = { path = "../executor" }
 axum = "0.8.8"
 sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "uuid", "time", "migrate"] }
 clap.workspace = true

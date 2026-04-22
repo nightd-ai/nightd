@@ -1,7 +1,7 @@
 use axum::{Router, routing::get};
 use tokio::net::TcpListener;
 
-use crate::api;
+use crate::api::status;
 
 pub(crate) async fn run() {
     let app = router();
@@ -16,5 +16,5 @@ pub(crate) async fn run() {
 }
 
 fn router() -> Router {
-    Router::new().route("/status", get(api::status::get))
+    Router::new().route("/status", get(status::get))
 }
