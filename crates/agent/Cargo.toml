@@ -6,7 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-sacp = "0.1"
+sacp = "11.0"
 sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "uuid", "time", "migrate"] }
 tokio.workspace = true
 time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
