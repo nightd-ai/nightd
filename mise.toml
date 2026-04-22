@@ -4,4 +4,3 @@ _.file = '.env'
 [tools]
 uv = "latest"
 rust = "latest"
-jj = "latest"

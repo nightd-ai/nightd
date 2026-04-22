@@ -19,11 +19,6 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - name: Install jj
-        run: |
-          VERSION=$(curl -s https://api.github.com/repos/jj-vcs/jj/releases/latest | jq -r .tag_name)
-          mkdir -p "$HOME/.cargo/bin"
-          curl -L "https://github.com/jj-vcs/jj/releases/download/${VERSION}/jj-${VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar xz -C "$HOME/.cargo/bin"
       - name: Check formatting
         run: cargo fmt --check
       - name: Run clippy
