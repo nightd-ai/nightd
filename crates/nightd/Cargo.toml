@@ -12,3 +12,4 @@ sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "uuid", "time",
 clap.workspace = true
 serde = { version = "1.0", features = ["derive"] }
 tokio.workspace = true
+agent = { path = "../agent" }
