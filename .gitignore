@@ -6,3 +6,6 @@ site/
 
 # Local environment variables
 .env
+
+# Database
+nightd.db
