@@ -51,10 +51,6 @@ edit_uri = "edit/main/docs/"
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
   { "Home" = "index.md" },
-  { "Architecture" = [
-    { "Overview" = "adr/index.md" },
-    { "ADR 001: ACP Native" = "adr/001-acp-native-architecture.md" },
-  ] },
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
