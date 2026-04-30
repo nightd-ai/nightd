@@ -1,6 +1,10 @@
 # Rust
 target/
 
+# Typescript
+node_modules/
+dist/
+
 # Website
 site/
 

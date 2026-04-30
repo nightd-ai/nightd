@@ -1,0 +1,37 @@
+[tools]
+bun = "latest"
+rust = "latest"
+
+[tasks."fmt:typescript"]
+run = "bun run --workspaces fmt"
+
+[tasks."fmt:rust"]
+run = "cargo fmt"
+dir = "{{cwd}}/packages/app/src-tauri"
+
+[tasks.fmt]
+description = "Fromat code"
+depends = ["fmt:typescript", "fmt:rust"]
+
+[tasks."lint:typescript"]
+run = "bun run --workspaces lint"
+
+[tasks."lint:rust"]
+run = "cargo clippy"
+dir = "{{cwd}}/packages/app/src-tauri"
+
+[tasks.lint]
+description = "Run linter"
+depends = ["lint:typescript", "lint:rust"]
+
+
+[tasks."type-check:typescript"]
+run = "bun run --workspaces type-check"
+
+[tasks."type-check:rust"]
+run = "cargo check"
+dir = "{{cwd}}/packages/app/src-tauri"
+
+[tasks.type-check]
+description = "Run type checks"
+depends = ["type-check:typescript", "type-check:rust"]
