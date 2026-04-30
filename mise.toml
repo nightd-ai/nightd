@@ -35,3 +35,13 @@ dir = "{{cwd}}/packages/app/src-tauri"
 [tasks.type-check]
 description = "Run type checks"
 depends = ["type-check:typescript", "type-check:rust"]
+
+[tasks."dev:app"]
+description = "Run app in dev mode"
+run = "bun run tauri dev"
+dir = "{{cwd}}/packages/app"
+
+[tasks."dev:runner"]
+description = "Run runner in dev mode"
+run = "bun run dev"
+dir = "{{cwd}}/packages/runner"

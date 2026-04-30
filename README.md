@@ -6,35 +6,25 @@ A daemon to schedule autonomous coding agents.
 
 ### Prerequisites
 
-- [Rust](https://rust-lang.org/tools/install/)
-- [uvx](https://docs.astral.sh/uv/getting-started/installation/) - for documentation
+- [mise](https://mise.jdx.dev/getting-started/installation.html)
 
 ### Setup
 
-1. Build the project:
-
-   ```bash
-   cargo build
-   ```
-
-2. Run the daemon:
-
-   ```bash
-   cargo run --bin nightd
-   ```
-
-### Tests
-
-You can run the tests via:
-
 ```bash
-cargo test
+mise install
+bun install
 ```
 
-### Documentation
+### Running
 
-To run the documentation locally:
+Run the app in dev mode:
 
 ```bash
-uvx zensical serve
+mise run dev:app
+```
+
+Run the runner in dev mode:
+
+```bash
+mise run dev:runner
 ```
