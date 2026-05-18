@@ -1,0 +1,7 @@
+{
+  "workspace": ["./apps/*"],
+  "nodeModulesDir": "auto",
+  "fmt": {
+    "proseWrap": "preserve"
+  }
+}

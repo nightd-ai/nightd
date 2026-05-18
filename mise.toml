@@ -1,8 +1,9 @@
 [tasks.ci]
-run = "echo 'Hello world'"
+run = ["deno fmt --check", "deno lint"]
 
 [tasks.docs]
 run = "uvx zensical build --clean"
 
 [tools]
+deno = "latest"
 uv = "latest"
