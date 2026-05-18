@@ -1,47 +1,16 @@
+[tasks.ci]
+run = "echo 'Hello world'"
+
+[tasks.docs]
+run = "uvx zensical build --clean"
+
+[env]
+MISE_EXPERIMENTAL = 1
+
 [tools]
-bun = "latest"
-rust = "latest"
+node = "lts/krypton"
+pnpm = "latest"
+uv = "latest"
 
-[tasks."fmt:typescript"]
-run = "bun run --workspaces fmt"
-
-[tasks."fmt:rust"]
-run = "cargo fmt"
-dir = "{{cwd}}/packages/app/src-tauri"
-
-[tasks.fmt]
-description = "Fromat code"
-depends = ["fmt:typescript", "fmt:rust"]
-
-[tasks."lint:typescript"]
-run = "bun run --workspaces lint"
-
-[tasks."lint:rust"]
-run = "cargo clippy"
-dir = "{{cwd}}/packages/app/src-tauri"
-
-[tasks.lint]
-description = "Run linter"
-depends = ["lint:typescript", "lint:rust"]
-
-
-[tasks."type-check:typescript"]
-run = "bun run --workspaces type-check"
-
-[tasks."type-check:rust"]
-run = "cargo check"
-dir = "{{cwd}}/packages/app/src-tauri"
-
-[tasks.type-check]
-description = "Run type checks"
-depends = ["type-check:typescript", "type-check:rust"]
-
-[tasks."dev:app"]
-description = "Run app in dev mode"
-run = "bun run tauri dev"
-dir = "{{cwd}}/packages/app"
-
-[tasks."dev:runner"]
-description = "Run runner in dev mode"
-run = "bun run dev"
-dir = "{{cwd}}/packages/runner"
+[deps.pnpm]
+auto = true

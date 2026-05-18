@@ -16,13 +16,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/configure-pages@v6
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-      - run: uvx zensical build --clean
+      - uses: jdx/mise-action@v3
+      - run: mise run docs
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
