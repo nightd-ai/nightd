@@ -4,13 +4,5 @@ run = "echo 'Hello world'"
 [tasks.docs]
 run = "uvx zensical build --clean"
 
-[env]
-MISE_EXPERIMENTAL = 1
-
 [tools]
-node = "lts/krypton"
-pnpm = "latest"
 uv = "latest"
-
-[deps.pnpm]
-auto = true
