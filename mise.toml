@@ -4,6 +4,14 @@ run = ["deno fmt --check", "deno lint"]
 [tasks.docs]
 run = "uvx zensical build --clean"
 
+[env]
+MISE_EXPERIMENTAL = 1
+
 [tools]
 deno = "latest"
+node = "lts/krypton"
+pnpm = "latest"
 uv = "latest"
+
+[deps.pnpm]
+auto = true
