@@ -1,2 +1,6 @@
 packages:
   - "apps/*"
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - hono@4.12.21

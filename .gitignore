@@ -1,6 +1,3 @@
-# Rust
-target/
-
 # Typescript
 node_modules/
 dist/
@@ -10,6 +7,3 @@ site/
 
 # Local environment variables
 .env
-
-# Database
-nightd.db

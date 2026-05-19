@@ -1,5 +1,7 @@
 # Guidelines for agents
 
+This is a mono-repo with multiple apps written in Typescript. It uses pnpm as a package manager and mise to manage the development environment.
+
 ## Credentials
 
 CRITICAL: NEVER try to read or write to `.env`. ALWAYS ask the user to modify it.
@@ -12,10 +14,9 @@ CRITICAL: NEVER try to read or write to `.env`. ALWAYS ask the user to modify it
 
 Before committing changes on code, tests or dependencies do the following tasks:
 
-- Format code - `mise run fmt`
-- Run type checks - `mise run type-check`
-- Run linter - `mise run lint`
-- Fix all type and linting errors and warnings
+- Format code - `pn fmt`
+- Run checks - `mise run ci`
+- Fix all errors and warnings
 
 ### Commit Signing
 

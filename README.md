@@ -12,19 +12,18 @@ A daemon to schedule autonomous coding agents.
 
 ```bash
 mise install
-bun install
 ```
 
 ### Running
 
-Run the app in dev mode:
+Run the daemon in dev mode:
 
 ```bash
-mise run dev:app
+pn --filter nightd dev
 ```
 
-Run the runner in dev mode:
+Run the web app in dev mode:
 
 ```bash
-mise run dev:runner
+pn --filter web dev
 ```

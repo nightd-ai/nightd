@@ -1,5 +1,9 @@
 [tasks.ci]
-run = ["deno fmt --check", "deno lint"]
+run = [
+  "pn fmt:check",
+  "pn lint",
+  "pn -r typecheck",
+]
 
 [tasks.docs]
 run = "uvx zensical build --clean"
@@ -8,7 +12,6 @@ run = "uvx zensical build --clean"
 MISE_EXPERIMENTAL = 1
 
 [tools]
-deno = "latest"
 node = "lts/krypton"
 pnpm = "latest"
 uv = "latest"
