@@ -10,3 +10,4 @@ minimumReleaseAgeExclude:
   - oxlint@1.66.0
   - "@oxlint/*"
   - "@types/node@25.9.1"
+  - "@types/react@19.2.15"
