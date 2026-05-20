@@ -4,3 +4,4 @@ allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
   - hono@4.12.21
+  - tsx@4.22.3
