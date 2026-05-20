@@ -4,3 +4,5 @@ allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
   - hono@4.12.21
+  - oxfmt@0.51.0
+  - "@oxfmt/*"
