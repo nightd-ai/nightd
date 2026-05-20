@@ -2,21 +2,21 @@
 title: Welcome to nightd
 ---
 
-`nightd` is like Docker for AI agent tasks. Instead of working interactively with your coding agent, schedule coding tasks in the background and review the created pull requests.
+`nightd` automatically picks tickets from Linear, runs coding agents in the background, and creates pull requests for you. Instead of working interactively with your coding agent, everything is scheduled so you can review finished work.
 
 !!! warning "Under Active Development"
 
-    `nightd` is currently being built and is not ready for use. You can try it out by checking out the source code. We will provide easy to install releases later. Early adopters welcome — help shape the future!
+    `nightd` is currently being built and is not ready for use. You can try it out by checking out the source code. We will provide easy-to-install releases later. Early adopters welcome — help shape the future!
 
 ## How it works
 
-`nightd` runs as a local daemon that manages agent tasks through [ACP](https://agentclientprotocol.com) in [devcontainers](https://containers.dev), supporting [mise](https://mise.jdx.dev) as an easy alternative to writing Dockerfiles. Each task runs in its own [Jujutsu](https://www.jj-vcs.dev) workspace, isolating changes and avoiding conflicts with other sessions. Your agents create branches and submit pull requests on your behalf — all without cloud dependencies.
+Connect `nightd` to Linear and your repository. When a ticket is ready, `nightd` spins up an agent that follows your `WORKFLOW.md`, creates a branch, and opens a pull request — all without interrupting you.
 
 ## Features
 
-- **Background Tasks** — Schedule tasks in `nightd` and do something else in the meantime
-- **Agent- and Provider-Agnostic** — Use your existing agentic setup with support for OpenCode, Claude Code and others
-- **Local-first** — Works fully on your laptop without any subscriptions
+- **Background Tasks** — Create tickets in Linear and `nightd` will implement them overnight
+- **Bring Your Own Agent** — Bring your own API keys and skills; it works with Claude Code, OpenCode, and any ACP-compatible agent
+- **Fair Source** — Self-host today; managed cloud coming soon
 
 ## Join the Community
 
