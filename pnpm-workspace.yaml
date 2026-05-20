@@ -6,3 +6,4 @@ minimumReleaseAgeExclude:
   - hono@4.12.21
   - oxlint@1.66.0
   - "@oxlint/*"
+  - "@types/node@25.9.1"
