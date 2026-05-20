@@ -5,3 +5,8 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - hono@4.12.21
   - tsx@4.22.3
+  - oxfmt@0.51.0
+  - "@oxfmt/*"
+  - oxlint@1.66.0
+  - "@oxlint/*"
+  - "@types/node@25.9.1"
