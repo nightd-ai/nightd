@@ -1,12 +1,37 @@
-[tasks.ci]
+[tasks."dev:nightd"]
+run = "nightd"
+
+[tasks."dev:web"]
+run = "pn --filter web dev"
+
+[tasks.fmt]
+run = [
+  "ruff format",
+  "pn fmt",
+]
+
+[tasks."ci:python"]
+run = [
+  "ruff format --check",
+  "ruff check",
+  "ty check",
+]
+
+[tasks."ci:typescript"]
 run = [
   "pn fmt:check",
   "pn lint",
   "pn -r typecheck",
 ]
 
+[tasks.ci]
+depends = [
+  "ci:python",
+  "ci:typescript",
+]
+
 [tasks.docs]
-run = "uvx zensical build --clean"
+run = "zensical build --clean"
 
 [env]
 MISE_EXPERIMENTAL = 1
@@ -16,5 +41,11 @@ node = "lts/krypton"
 pnpm = "latest"
 uv = "latest"
 
+[deps.uv]
+auto = true
+
 [deps.pnpm]
 auto = true
+
+[settings]
+python.uv_venv_auto = "source"

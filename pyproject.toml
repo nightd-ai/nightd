@@ -1,0 +1,23 @@
+[project]
+name = "nightd-workspace"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "nightctl",
+    "nightd",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+    "ty>=0.0.38",
+    "zensical>=0.0.43",
+]
+
+[tool.uv.workspace]
+members = ["apps/*"]
+exclude = ["apps/web"]
+
+[tool.uv.sources]
+nightd = { workspace = true }
+nightctl = { workspace = true }
