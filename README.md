@@ -11,6 +11,7 @@ A daemon to schedule autonomous coding agents.
 ### Setup
 
 ```bash
+mise settings experimental=true
 mise install
 ```
 
