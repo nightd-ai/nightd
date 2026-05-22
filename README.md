@@ -11,6 +11,7 @@ A daemon to schedule autonomous coding agents.
 ### Setup
 
 ```bash
+mise settings experimental=true
 mise install
 ```
 
@@ -19,11 +20,11 @@ mise install
 Run the daemon in dev mode:
 
 ```bash
-pn --filter nightd dev
+mise run dev:nightd
 ```
 
 Run the web app in dev mode:
 
 ```bash
-pn --filter web dev
+mise run dev:web
 ```

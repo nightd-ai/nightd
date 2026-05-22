@@ -1,15 +1,35 @@
-[tasks.ci]
+[tasks."dev:nightd"]
+run = "cargo run -p nightd -- start"
+
+[tasks."dev:web"]
+run = "pn --filter web dev"
+
+[tasks.fmt]
+run = [
+  "cargo fmt",
+  "pn fmt",
+]
+
+[tasks."ci:rust"]
+run = [
+  "cargo fmt --check",
+  "cargo check --workspace",
+  "cargo clippy --workspace -- -D warnings",
+  "cargo test --workspace",
+]
+
+[tasks."ci:typescript"]
 run = [
   "pn fmt:check",
   "pn lint",
   "pn -r typecheck",
 ]
 
+[tasks.ci]
+depends = ["ci:rust", "ci:typescript"]
+
 [tasks.docs]
 run = "uvx zensical build --clean"
-
-[env]
-MISE_EXPERIMENTAL = 1
 
 [tools]
 node = "lts/krypton"
