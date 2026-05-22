@@ -2,11 +2,3 @@ packages:
   - "apps/web"
 allowBuilds:
   esbuild: true
-minimumReleaseAgeExclude:
-  - tsx@4.22.3
-  - oxfmt@0.51.0
-  - "@oxfmt/*"
-  - oxlint@1.66.0
-  - "@oxlint/*"
-  - "@types/node@25.9.1"
-  - "@types/react@19.2.15"
