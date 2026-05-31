@@ -17,6 +17,12 @@ mise install
 
 ### Running
 
+Run the daemon in dev mode:
+
+```bash
+mise run dev:nightd
+```
+
 Run the desktop app in dev mode:
 
 ```bash

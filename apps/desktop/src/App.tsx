@@ -6,10 +6,15 @@ import "./App.css";
 function App() {
   const [greetMsg, setGreetMsg] = createSignal("");
   const [name, setName] = createSignal("");
+  const [infoMsg, setInfoMsg] = createSignal("");
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", { name: name() }));
+  }
+
+  async function fetchInfo() {
+    setInfoMsg(await invoke("info"));
   }
 
   return (
@@ -44,6 +49,11 @@ function App() {
         <button type="submit">Greet</button>
       </form>
       <p>{greetMsg()}</p>
+
+      <div class="row">
+        <button onClick={fetchInfo}>Get Info</button>
+      </div>
+      <p>{infoMsg()}</p>
     </main>
   );
 }

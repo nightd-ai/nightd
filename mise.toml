@@ -1,6 +1,9 @@
 [tasks."dev:desktop"]
 run = "pn --filter desktop tauri dev"
 
+[tasks."dev:nightd"]
+run = "cargo run -p nightd -- start"
+
 [tasks.fmt]
 run = [
   "cargo fmt",
@@ -27,6 +30,10 @@ depends = ["ci:rust", "ci:typescript"]
 
 [tasks.docs]
 run = "uvx zensical build --clean"
+
+[env]
+NIGHTD_SOCKET_PATH = "{{config_root}}/nightd.socket"
+_.file = '.env'
 
 [tools]
 node = "lts"
