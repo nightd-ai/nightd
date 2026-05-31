@@ -38,3 +38,6 @@ uv = "latest"
 
 [deps.pnpm]
 auto = true
+
+[settings]
+idiomatic_version_file_enable_tools = ["rust"]
