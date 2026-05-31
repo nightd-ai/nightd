@@ -10,3 +10,6 @@ site/
 
 # Local environment variables
 .env
+
+# Daemon socket
+nightd.sock

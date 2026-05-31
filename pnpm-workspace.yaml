@@ -1,4 +1,4 @@
 packages:
-  - "apps/web"
+  - "apps/*"
 allowBuilds:
   esbuild: true

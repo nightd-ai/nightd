@@ -20,11 +20,11 @@ mise install
 Run the daemon in dev mode:
 
 ```bash
-mise run dev:nightd
+mise run dev:daemon
 ```
 
-Run the web app in dev mode:
+Run the desktop app in dev mode:
 
 ```bash
-mise run dev:web
+mise run dev:desktop
 ```
