@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["apps/nightd", "apps/nightctl", "apps/nightlet"]
+members = []
 
 [workspace.package]
 edition = "2024"
