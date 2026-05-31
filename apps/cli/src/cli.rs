@@ -18,7 +18,7 @@ pub async fn run() {
 
     match cli.command {
         Commands::Info => {
-            let client = Client::new().expect("failed to create nightd client");
+            let client = Client::new().expect("failed to create daemon client");
             let info = client.info().await.expect("failed to fetch info");
             println!("Status: {}", info.status);
         }

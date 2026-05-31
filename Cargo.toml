@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["apps/desktop/src-tauri", "crates/*"]
+members = ["apps/daemon", "apps/cli", "apps/desktop/src-tauri", "crates/*"]
 
 [workspace.package]
 edition = "2024"

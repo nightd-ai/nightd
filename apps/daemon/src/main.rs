@@ -1,4 +1,4 @@
 #[tokio::main]
 async fn main() {
-    nightctl::cli::run().await;
+    daemon::cli::run().await;
 }

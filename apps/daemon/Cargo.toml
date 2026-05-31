@@ -1,5 +1,5 @@
 [package]
-name = "nightd"
+name = "daemon"
 edition.workspace = true
 
 [dependencies]

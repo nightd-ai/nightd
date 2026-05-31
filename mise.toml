@@ -1,8 +1,8 @@
 [tasks."dev:desktop"]
 run = "pn --filter desktop tauri dev"
 
-[tasks."dev:nightd"]
-run = "cargo run -p nightd -- start"
+[tasks."dev:daemon"]
+run = "cargo run -p daemon -- start"
 
 [tasks.fmt]
 run = [
