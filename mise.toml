@@ -1,7 +1,14 @@
 [tasks.fmt]
 run = "gofmt -w ."
 
+[tasks.up]
+run = "docker compose up -d --wait"
+
+[tasks.down]
+run = "docker compose down"
+
 [tasks.ci]
+depends = ["up"]
 run = [
   "test -z \"$(gofmt -l .)\"",
   "go build ./...",
@@ -17,6 +24,7 @@ run = "uvx zensical build --clean"
 
 [env]
 _.file = '.env'
+DATABASE_URL = "postgres://nightd:nightd@localhost:5432/nightd?sslmode=disable"
 
 [tools]
 go = "latest"
