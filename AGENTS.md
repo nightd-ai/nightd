@@ -1,6 +1,14 @@
 # Guidelines for agents
 
-This is a mono-repo with multiple apps written in Rust and Typescript. It uses Cargo and pnpm as a package manager and mise to manage the development environment and run common tasks.
+`nightd` is a daemon that runs on a server and polls Linear. It automatically picks tickets and applies the following steps:
+
+1. Create workspace for the ticket
+2. Launch OpenCode session for the ticket in the background
+3. Track the linked pull request for the change
+4. Launch additional sessions to react to review comments
+5. Clean everything up after merging or closing the pull request
+
+This project uses mise to manage the development environment and run common tasks. Do not add Makefiles.
 
 ## Credentials
 

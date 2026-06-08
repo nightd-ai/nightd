@@ -1,32 +1,16 @@
-[tasks."dev:desktop"]
-run = "pn --filter desktop tauri dev"
-
-[tasks."dev:daemon"]
-run = "cargo run -p daemon -- start"
-
 [tasks.fmt]
-run = [
-  "cargo fmt",
-  "pn fmt",
-]
-
-[tasks."ci:rust"]
-run = [
-  "cargo fmt --check",
-  "cargo check --workspace",
-  "cargo clippy --workspace -- -D warnings",
-  "cargo test --workspace",
-]
-
-[tasks."ci:typescript"]
-run = [
-  "pn fmt:check",
-  "pn lint",
-  "pn -r typecheck",
-]
+run = "gofmt -w ."
 
 [tasks.ci]
-depends = ["ci:rust", "ci:typescript"]
+run = [
+  "test -z \"$(gofmt -l .)\"",
+  "go build ./...",
+  "golangci-lint run",
+  "go test ./...",
+]
+
+[tasks."dev:nightd"]
+run = "go run cmd/nightd/main.go start"
 
 [tasks.docs]
 run = "uvx zensical build --clean"
@@ -35,4 +19,6 @@ run = "uvx zensical build --clean"
 _.file = '.env'
 
 [tools]
+go = "latest"
+golangci-lint = "latest"
 uv = "latest"
