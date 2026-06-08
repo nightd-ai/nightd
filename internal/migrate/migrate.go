@@ -8,7 +8,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	pgx "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	"github.com/nightd-ai/nightd/db"
+	"github.com/nightd-ai/nightd/internal/db"
 )
 
 // RunUp runs all pending up migrations.

@@ -1,13 +1,19 @@
-// Package db provides database connection utilities.
+// Package db provides database connection utilities and embedded migration files.
 package db
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
+
+// Migrations contains the embedded database migration files.
+//
+//go:embed migrations/*.sql
+var Migrations embed.FS
 
 // NewPool creates a new PostgreSQL connection pool from the DATABASE_URL environment variable.
 func NewPool(ctx context.Context) (*pgxpool.Pool, error) {
