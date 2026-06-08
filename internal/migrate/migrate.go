@@ -3,12 +3,19 @@ package migrate
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/nightd-ai/nightd/db"
 )
+
+func normalizeDSN(dsn string) string {
+	dsn = strings.Replace(dsn, "postgres://", "pgx5://", 1)
+	dsn = strings.Replace(dsn, "postgresql://", "pgx5://", 1)
+	return dsn
+}
 
 func RunUp() error {
 	dsn := os.Getenv("DATABASE_URL")
@@ -21,7 +28,7 @@ func RunUp() error {
 		return fmt.Errorf("failed to create migration source: %w", err)
 	}
 
-	m, err := migrate.NewWithSourceInstance("iofs", source, dsn)
+	m, err := migrate.NewWithSourceInstance("iofs", source, normalizeDSN(dsn))
 	if err != nil {
 		return fmt.Errorf("failed to create migrate instance: %w", err)
 	}
@@ -44,7 +51,7 @@ func RunDown() error {
 		return fmt.Errorf("failed to create migration source: %w", err)
 	}
 
-	m, err := migrate.NewWithSourceInstance("iofs", source, dsn)
+	m, err := migrate.NewWithSourceInstance("iofs", source, normalizeDSN(dsn))
 	if err != nil {
 		return fmt.Errorf("failed to create migrate instance: %w", err)
 	}
@@ -67,7 +74,7 @@ func GetVersion() (version uint, dirty bool, err error) {
 		return 0, false, fmt.Errorf("failed to create migration source: %w", err)
 	}
 
-	m, err := migrate.NewWithSourceInstance("iofs", source, dsn)
+	m, err := migrate.NewWithSourceInstance("iofs", source, normalizeDSN(dsn))
 	if err != nil {
 		return 0, false, fmt.Errorf("failed to create migrate instance: %w", err)
 	}
