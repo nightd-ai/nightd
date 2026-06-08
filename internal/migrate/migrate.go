@@ -3,17 +3,22 @@ package migrate
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
 	pgx "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	"github.com/nightd-ai/nightd/internal/db"
 )
+
+// Migrations contains the embedded database migration files.
+//
+//go:embed migrations/*.sql
+var Migrations embed.FS
 
 // RunUp runs all pending up migrations.
 func RunUp(sqlDB *sql.DB) error {
-	source, err := iofs.New(db.Migrations, "migrations")
+	source, err := iofs.New(Migrations, "migrations")
 	if err != nil {
 		return fmt.Errorf("failed to create migration source: %w", err)
 	}
@@ -38,7 +43,7 @@ func RunUp(sqlDB *sql.DB) error {
 
 // RunDown runs one step down migration.
 func RunDown(sqlDB *sql.DB) error {
-	source, err := iofs.New(db.Migrations, "migrations")
+	source, err := iofs.New(Migrations, "migrations")
 	if err != nil {
 		return fmt.Errorf("failed to create migration source: %w", err)
 	}
@@ -63,7 +68,7 @@ func RunDown(sqlDB *sql.DB) error {
 
 // GetVersion returns the current migration version and dirty status.
 func GetVersion(sqlDB *sql.DB) (version uint, dirty bool, err error) {
-	source, err := iofs.New(db.Migrations, "migrations")
+	source, err := iofs.New(Migrations, "migrations")
 	if err != nil {
 		return 0, false, fmt.Errorf("failed to create migration source: %w", err)
 	}
