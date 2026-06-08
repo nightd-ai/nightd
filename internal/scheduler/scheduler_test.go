@@ -8,29 +8,29 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/nightd-ai/nightd/internal/db"
 	"github.com/nightd-ai/nightd/internal/migrate"
 )
 
 var testPool *pgxpool.Pool
 
 func TestMain(m *testing.M) {
-	if err := migrate.RunUp(); err != nil {
+	ctx := context.Background()
+
+	pool, err := db.NewPool(ctx)
+	if err != nil {
+		log.Fatal("failed to create pool:", err)
+	}
+	defer pool.Close()
+
+	sqlDB := stdlib.OpenDBFromPool(pool)
+	if err := migrate.RunUp(sqlDB); err != nil {
 		log.Fatal("failed to run migrations:", err)
 	}
 
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
-		log.Fatal("DATABASE_URL is not set")
-	}
-
-	var err error
-	testPool, err = pgxpool.New(context.Background(), dsn)
-	if err != nil {
-		log.Fatal("failed to create test pool:", err)
-	}
-
+	testPool = pool
 	code := m.Run()
-	testPool.Close()
 	os.Exit(code)
 }
 
