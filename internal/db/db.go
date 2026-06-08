@@ -1,3 +1,4 @@
+// Package db provides database connection utilities.
 package db
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// NewPool creates a new PostgreSQL connection pool from the DATABASE_URL environment variable.
 func NewPool(ctx context.Context) (*pgxpool.Pool, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {

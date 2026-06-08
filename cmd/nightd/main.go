@@ -1,3 +1,4 @@
+// Package main provides the nightd CLI.
 package main
 
 import (
@@ -25,7 +26,7 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start the nightd daemon",
 	Long:  `Start the nightd daemon to begin scheduling autonomous coding agents.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		pool, err := db.NewPool(cmd.Context())
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "failed to create db pool:", err)
@@ -78,7 +79,7 @@ var migrateCmd = &cobra.Command{
 var migrateUpCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Run all pending up migrations",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		pool, err := db.NewPool(cmd.Context())
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "failed to create db pool:", err)
@@ -98,7 +99,7 @@ var migrateUpCmd = &cobra.Command{
 var migrateDownCmd = &cobra.Command{
 	Use:   "down",
 	Short: "Run one step down migration",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		pool, err := db.NewPool(cmd.Context())
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "failed to create db pool:", err)
@@ -118,7 +119,7 @@ var migrateDownCmd = &cobra.Command{
 var migrateVersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print current migration version and dirty status",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		pool, err := db.NewPool(cmd.Context())
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "failed to create db pool:", err)

@@ -1,3 +1,4 @@
+// Package scheduler provides a task queue poller and processor.
 package scheduler
 
 import (
@@ -10,14 +11,17 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// Scheduler polls the task queue and processes tasks in parallel.
 type Scheduler struct {
 	db *pgxpool.Pool
 }
 
+// New creates a new Scheduler with the given database pool.
 func New(db *pgxpool.Pool) *Scheduler {
 	return &Scheduler{db: db}
 }
 
+// Run starts polling the task queue and processing tasks until the context is cancelled.
 func (s *Scheduler) Run(ctx context.Context) error {
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()

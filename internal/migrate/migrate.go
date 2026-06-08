@@ -1,3 +1,4 @@
+// Package migrate provides database migration helpers.
 package migrate
 
 import (
@@ -10,6 +11,7 @@ import (
 	"github.com/nightd-ai/nightd/db"
 )
 
+// RunUp runs all pending up migrations.
 func RunUp(sqlDB *sql.DB) error {
 	source, err := iofs.New(db.Migrations, "migrations")
 	if err != nil {
@@ -34,6 +36,7 @@ func RunUp(sqlDB *sql.DB) error {
 	return nil
 }
 
+// RunDown runs one step down migration.
 func RunDown(sqlDB *sql.DB) error {
 	source, err := iofs.New(db.Migrations, "migrations")
 	if err != nil {
@@ -58,6 +61,7 @@ func RunDown(sqlDB *sql.DB) error {
 	return nil
 }
 
+// GetVersion returns the current migration version and dirty status.
 func GetVersion(sqlDB *sql.DB) (version uint, dirty bool, err error) {
 	source, err := iofs.New(db.Migrations, "migrations")
 	if err != nil {
