@@ -32,16 +32,7 @@ depends = ["ci:rust", "ci:typescript"]
 run = "uvx zensical build --clean"
 
 [env]
-NIGHTD_SOCKET_PATH = "{{config_root}}/nightd.socket"
 _.file = '.env'
 
 [tools]
-node = "lts"
-pnpm = "latest"
 uv = "latest"
-
-[deps.pnpm]
-auto = true
-
-[settings]
-idiomatic_version_file_enable_tools = ["rust"]

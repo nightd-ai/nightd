@@ -1,8 +1,0 @@
-[package]
-name = "cli"
-edition.workspace = true
-
-[dependencies]
-clap.workspace = true
-nightd-client.workspace = true
-tokio.workspace = true
