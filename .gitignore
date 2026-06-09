@@ -1,15 +1,8 @@
-# Typescript
-node_modules/
-dist/
-
-# Rust
-target/
-
 # Website
 site/
 
 # Local environment variables
 .env
 
-# Daemon socket
-nightd.sock
+# Go binary
+/nightd

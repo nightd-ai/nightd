@@ -1,47 +1,32 @@
-[tasks."dev:desktop"]
-run = "pn --filter desktop tauri dev"
-
-[tasks."dev:daemon"]
-run = "cargo run -p daemon -- start"
-
 [tasks.fmt]
-run = [
-  "cargo fmt",
-  "pn fmt",
-]
+run = "gofmt -w ."
 
-[tasks."ci:rust"]
-run = [
-  "cargo fmt --check",
-  "cargo check --workspace",
-  "cargo clippy --workspace -- -D warnings",
-  "cargo test --workspace",
-]
+[tasks.up]
+run = "docker compose up -d --wait"
 
-[tasks."ci:typescript"]
-run = [
-  "pn fmt:check",
-  "pn lint",
-  "pn -r typecheck",
-]
+[tasks.down]
+run = "docker compose down -v"
 
 [tasks.ci]
-depends = ["ci:rust", "ci:typescript"]
+depends = ["up"]
+run = [
+  "test -z \"$(gofmt -l .)\"",
+  "go build ./...",
+  "golangci-lint run",
+  "go test ./...",
+]
+
+[tasks."dev:nightd"]
+run = "go run cmd/nightd/main.go start"
 
 [tasks.docs]
 run = "uvx zensical build --clean"
 
 [env]
-NIGHTD_SOCKET_PATH = "{{config_root}}/nightd.socket"
 _.file = '.env'
+DATABASE_URL = "postgres://nightd:nightd@localhost:5432/nightd?sslmode=disable"
 
 [tools]
-node = "lts"
-pnpm = "latest"
+go = "latest"
+golangci-lint = "latest"
 uv = "latest"
-
-[deps.pnpm]
-auto = true
-
-[settings]
-idiomatic_version_file_enable_tools = ["rust"]
