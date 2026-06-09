@@ -5,7 +5,7 @@ run = "gofmt -w ."
 run = "docker compose up -d --wait"
 
 [tasks.down]
-run = "docker compose down"
+run = "docker compose down -v"
 
 [tasks.ci]
 depends = ["up"]
