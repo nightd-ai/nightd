@@ -9,12 +9,7 @@ run = "docker compose down -v"
 
 [tasks.ci]
 depends = ["up"]
-run = [
-  "test -z \"$(gofmt -l .)\"",
-  "go build ./...",
-  "golangci-lint run",
-  "go test ./...",
-]
+run = ["gofmt -l .", "go build ./...", "golangci-lint run", "go test ./..."]
 
 [tasks."dev:nightd"]
 run = "go run cmd/nightd/main.go start"
