@@ -11,8 +11,14 @@ run = "docker compose down -v"
 depends = ["up"]
 run = ["gofmt -l .", "go build ./...", "golangci-lint run", "go test ./..."]
 
-[tasks."dev:nightd"]
-run = "go run cmd/nightd/main.go start"
+[tasks."dev:api"]
+run = "go run ./cmd/api"
+
+[tasks."dev:gateway"]
+run = "go run ./cmd/gateway"
+
+[tasks."dev:node"]
+run = "go run ./cmd/node"
 
 [tasks.docs]
 run = "uvx zensical build --clean"

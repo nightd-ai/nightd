@@ -4,5 +4,8 @@ site/
 # Local environment variables
 .env
 
-# Go binary
+# Go binaries
+/api
+/gateway
+/node
 /nightd
