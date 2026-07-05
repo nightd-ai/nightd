@@ -9,15 +9,16 @@ run = "docker compose down -v"
 
 [tasks.ci]
 depends = ["up"]
-run = [
-  "test -z \"$(gofmt -l .)\"",
-  "go build ./...",
-  "golangci-lint run",
-  "go test ./...",
-]
+run = ["gofmt -l .", "go build ./...", "golangci-lint run", "go test ./..."]
 
-[tasks."dev:nightd"]
-run = "go run cmd/nightd/main.go start"
+[tasks."dev:api"]
+run = "go run ./cmd/api start"
+
+[tasks."dev:gateway"]
+run = "go run ./cmd/gateway start"
+
+[tasks."dev:node"]
+run = "go run ./cmd/node start"
 
 [tasks.docs]
 run = "uvx zensical build --clean"
@@ -30,3 +31,4 @@ DATABASE_URL = "postgres://nightd:nightd@localhost:5432/nightd?sslmode=disable"
 go = "latest"
 golangci-lint = "latest"
 uv = "latest"
+zellij = "latest"
