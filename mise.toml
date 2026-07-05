@@ -12,13 +12,13 @@ depends = ["up"]
 run = ["gofmt -l .", "go build ./...", "golangci-lint run", "go test ./..."]
 
 [tasks."dev:api"]
-run = "go run ./cmd/api"
+run = "go run ./cmd/api start"
 
 [tasks."dev:gateway"]
-run = "go run ./cmd/gateway"
+run = "go run ./cmd/gateway start"
 
 [tasks."dev:node"]
-run = "go run ./cmd/node"
+run = "go run ./cmd/node start"
 
 [tasks.docs]
 run = "uvx zensical build --clean"
