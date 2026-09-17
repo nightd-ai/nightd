@@ -2,7 +2,9 @@
 
 A daemon to schedule autonomous coding agents.
 
-## Development
+## Documentation
+
+The documentation site is built with [Zensical](https://zensical.org).
 
 ### Prerequisites
 
@@ -11,14 +13,12 @@ A daemon to schedule autonomous coding agents.
 ### Setup
 
 ```bash
-mise settings experimental=true
+mise trust
 mise install
 ```
 
-### Running
-
-Run an app in dev mode:
+### Building the docs
 
 ```bash
-mise run dev:api
+mise run docs
 ```
