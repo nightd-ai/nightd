@@ -2,7 +2,7 @@
 title: Welcome to nightd
 ---
 
-`nightd` automatically picks tickets from Linear, runs coding agents in the background, and creates pull requests for you. Instead of working interactively with your coding agent, everything is scheduled so you can review finished work.
+Schedule coding sessions in `nightd` and let the daemon automatically do the changes for you. Instead of working interactively with your coding agent, everything is scheduled so you can review finished work.
 
 !!! warning "Under Active Development"
 
@@ -10,13 +10,13 @@ title: Welcome to nightd
 
 ## How it works
 
-Connect `nightd` to Linear and your repository. When a ticket is ready, `nightd` spins up an agent that follows your `WORKFLOW.md`, creates a branch, and opens a pull request — all without interrupting you.
+Launch the `nightlet` connector on your server or laptop and connect it to `nightd`. When a tasks is scheduled in `nightd`, it will be picked up automatically and a pull request is created.
 
 ## Features
 
-- **Background Tasks** — Create tickets in Linear and `nightd` will implement them overnight
-- **Bring Your Own Agent** — Bring your own API keys and skills; it works with Claude Code, OpenCode, and any ACP-compatible agent
-- **Fair Source** — Self-host today; managed cloud coming soon
+- **Background Tasks** — Create tasks and `nightd` will implement them overnight
+- **Build on Pi Durable** — Coding sessions can be resumed, even if you closed your laptop
+- **Open Source** — Self-host today; managed cloud coming soon
 
 ## Join the Community
 

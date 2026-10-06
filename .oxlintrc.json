@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "node": true
+  },
+  "options": {
+    "typeAware": true
+  },
+  "plugins": ["typescript", "vitest"],
+  "rules": {
+    "typescript/no-floating-promises": "error"
+  }
+}

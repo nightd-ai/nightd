@@ -2,23 +2,33 @@
 
 A daemon to schedule autonomous coding agents.
 
-## Documentation
-
-The documentation site is built with [Zensical](https://zensical.org).
-
 ### Prerequisites
 
-- [mise](https://mise.jdx.dev/getting-started/installation.html)
+- [Node.js](https://nodejs.org)
+- [pnpm](https://pnpm.io)
 
 ### Setup
 
 ```bash
-mise trust
-mise install
+pnpm install
 ```
 
-### Building the docs
+### Development
+
+Run the control plane:
 
 ```bash
-mise run docs
+pnpm --filter nightd dev
+```
+
+Run the data plane:
+
+```bash
+pnpm --filter nightlet dev
+```
+
+### Run the docs
+
+```bash
+uvx zensical serve
 ```

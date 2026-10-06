@@ -18,8 +18,19 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v4
+      - uses: pnpm/action-setup@v6
         with:
-          experimental: true
-          cache_key_prefix: "mise-v1-ci"
-      - run: mise run ci
+          version: 11
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm run fmt:check
+      - name: Type check
+        run: pnpm -r typecheck
+      - name: Lint
+        run: pnpm run lint
+      - name: Test
+        run: pnpm -r test
