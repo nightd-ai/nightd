@@ -13,5 +13,9 @@
   "dependencies": {
     "@hono/node-server": "catalog:",
     "hono": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }
