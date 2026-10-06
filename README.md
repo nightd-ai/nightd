@@ -2,14 +2,10 @@
 
 A daemon to schedule autonomous coding agents.
 
-## Documentation
-
-The documentation site is built with [Zensical](https://zensical.org).
-
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (LTS)
-- [pnpm](https://pnpm.io/)
+- [Node.js](https://nodejs.org)
+- [pnpm](https://pnpm.io)
 
 ### Setup
 
@@ -19,21 +15,20 @@ pnpm install
 
 ### Development
 
+Run the control plane:
+
 ```bash
-pnpm dev
+pnpm --filter nightd dev
 ```
 
-### Checks
+Run the data plane:
 
 ```bash
-pnpm run fmt:check
-pnpm run lint
-pnpm -r typecheck
-pnpm -r test
+pnpm --filter nightlet dev
 ```
 
-### Building the docs
+### Run the docs
 
 ```bash
-uvx zensical build --clean
+uvx zensical serve
 ```
