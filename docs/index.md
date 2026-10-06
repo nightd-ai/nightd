@@ -16,7 +16,7 @@ Launch the `nightlet` connector on your server or laptop and connect it to `nigh
 
 - **Background Tasks** — Create tasks and `nightd` will implement them overnight
 - **Build on Pi Durable** — Coding sessions can be resumed, even if you closed your laptop
-- **Fair Source** — Self-host today; managed cloud coming soon
+- **Open Source** — Self-host today; managed cloud coming soon
 
 ## Join the Community
 
