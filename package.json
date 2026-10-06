@@ -7,10 +7,7 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint --type-aware",
-    "lint:fix": "oxlint --type-aware --fix",
-    "test": "vitest run",
-    "typecheck": "pnpm -r typecheck && tsc --noEmit",
-    "ci": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run test"
+    "lint:fix": "oxlint --type-aware --fix"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -19,9 +16,5 @@
     "oxlint-tsgolint": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
-  },
-  "engines": {
-    "node": ">=24"
-  },
-  "packageManager": "pnpm@11.28.4"
+  }
 }

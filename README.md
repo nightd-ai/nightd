@@ -26,7 +26,10 @@ pnpm dev
 ### Checks
 
 ```bash
-pnpm run ci
+pnpm run fmt:check
+pnpm run lint
+pnpm -r typecheck
+pnpm -r test
 ```
 
 ### Building the docs
