@@ -8,17 +8,29 @@ The documentation site is built with [Zensical](https://zensical.org).
 
 ### Prerequisites
 
-- [mise](https://mise.jdx.dev/getting-started/installation.html)
+- [Node.js](https://nodejs.org/) (LTS)
+- [pnpm](https://pnpm.io/)
 
 ### Setup
 
 ```bash
-mise trust
-mise install
+pnpm install
+```
+
+### Development
+
+```bash
+pnpm dev
+```
+
+### Checks
+
+```bash
+pnpm run ci
 ```
 
 ### Building the docs
 
 ```bash
-mise run docs
+uvx zensical build --clean
 ```

@@ -3,3 +3,13 @@ site/
 
 # Local environment variables
 .env
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+coverage/
+
+# Test artifacts
+.vitest/

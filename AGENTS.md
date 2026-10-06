@@ -54,8 +54,8 @@ CRITICAL: NEVER try to read or write to `.env`. ALWAYS ask the user to modify it
 
 Before committing changes on code, tests or dependencies do the following tasks:
 
-- Format code - `mise run fmt`
-- Run checks - `mise run ci`
+- Format code - `pnpm run fmt`
+- Run checks - `pnpm run ci`
 - Fix all errors and warnings
 
 ### Commit Signing
