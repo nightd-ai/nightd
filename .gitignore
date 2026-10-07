@@ -13,3 +13,5 @@ coverage/
 
 # Test artifacts
 .vitest/
+# CocoIndex Code (ccc)
+/.cocoindex_code/
