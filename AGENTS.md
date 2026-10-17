@@ -21,3 +21,13 @@ Before committing changes on code, tests or dependencies do the following tasks:
 ### Commit Messages
 
 Use conventional commits for all commit messages.
+
+### Developer Certificate of Origin
+
+All commits MUST be signed off to certify the Developer Certificate of Origin. ALWAYS create commits with `git commit -s` to append a `Signed-off-by` trailer with your name and email.
+
+```bash
+git commit -s -m "feat: add something"
+```
+
+NEVER commit without a valid `Signed-off-by` line.
